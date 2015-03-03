@@ -17,9 +17,9 @@ import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.model.PersonDTO;
 import com.flocompany.util.RestUtil;
 
-public class UserAdminServlet extends HttpServlet {
+public class ParametreAdminServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(UserAdminServlet.class.getName());
+	private static final Logger log = Logger.getLogger(ParametreAdminServlet.class.getName());
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		System.out.println("**********GET");
@@ -54,16 +54,17 @@ public class UserAdminServlet extends HttpServlet {
 		
 		List<PersonDTO> users = UserImpl.getInstance().findAllUsers();
 		
-		req.setAttribute("parametreList", users);
+		req.setAttribute("userList", users);
 		
 		try {
-			req.getRequestDispatcher("/jsp/parametre_admin.jsp").forward(req, resp);
+			req.getRequestDispatcher("/jsp/user_admin.jsp").forward(req, resp);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		System.out.println("**********POST");
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");

@@ -26,7 +26,10 @@
 		<servlet-name>Songsend_user_admin</servlet-name>
 		<servlet-class>com.flocompany.servlet.UserAdminServlet</servlet-class>
   </servlet>
-  
+  <servlet>
+		<servlet-name>Songsend_parametre_admin</servlet-name>
+		<servlet-class>com.flocompany.servlet.ParametreAdminServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>SongRestService</servlet-name>
@@ -35,6 +38,10 @@
   <servlet-mapping>
 	<servlet-name>Songsend_user_admin</servlet-name>
 	<url-pattern>/songsend_user_admin</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+	<servlet-name>Songsend_parametre_admin</servlet-name>
+	<url-pattern>/songsend_parametre_admin</url-pattern>
   </servlet-mapping>  
   
 
