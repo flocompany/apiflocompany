@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+  <display-name>SongSendServices</display-name>
+  
+    
+	<filter>
+	        <filter-name>ObjectifyFilter</filter-name>
+	        <filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	        <filter-name>ObjectifyFilter</filter-name>
+	        <url-pattern>/*</url-pattern>
+	</filter-mapping>  
+  
+  <servlet>
+    <servlet-name>SongRestService</servlet-name>
+    <!-- servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class -->
+    <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+    <init-param>
+        <param-name>jersey.config.server.provider.packages</param-name>
+        <param-value>com.flocompany.rest.resource</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+		<servlet-name>Songsend_user_admin</servlet-name>
+		<servlet-class>com.flocompany.servlet.UserAdminServlet</servlet-class>
+  </servlet>
+  
+  
+  <servlet-mapping>
+    <servlet-name>SongRestService</servlet-name>
+    <url-pattern>/rest/*</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+	<servlet-name>Songsend_user_admin</servlet-name>
+	<url-pattern>/songsend_user_admin</url-pattern>
+  </servlet-mapping>  
+  
+
+	
+	
+  	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
