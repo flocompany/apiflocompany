@@ -35,8 +35,16 @@
 				</td>
 			</tr>			
 		</table>
-		<input type="hidden" name="action" value="add" />
-		<input type="submit" class="save" title="Save" value="Save" />
+		<select name="action">
+			  <option value="signup">Signup (WS, POST)</option>
+			  <option value="login">login (WS, POST)</option>
+			  <option value="demo">sampledemo (WS, GET)</option>
+			  <option value="search">search (WS, GET)</option>
+			  <option value="add">add (Not WS))</option>
+			  <option value="other">other</option>
+		</select> 
+		<!-- input type="hidden" name="action" value="add" / -->
+		<input type="submit" class="save" title="Execute" value="Execute" />
 	</form>
 	
 	
@@ -57,8 +65,8 @@
 		</thead>
 		<%
  
-		    List<PersonDTO> customers = (List<PersonDTO>)request.getAttribute("userList");
-		    for(PersonDTO e : customers){
+		    List<PersonDTO> users = (List<PersonDTO>)request.getAttribute("userList");
+		    for(PersonDTO e : users){
  
 		%>
 			<tr>

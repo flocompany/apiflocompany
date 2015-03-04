@@ -4,11 +4,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-public class NotAuthorizedException extends WebApplicationException {
-    public NotAuthorizedException(String message) {
-        super(Response.status(Response.Status.BAD_REQUEST)
+public class ResourceNotFindException extends WebApplicationException {
+    public ResourceNotFindException(String message) {
+        super(Response.status(Response.Status.FOUND)
             .entity(message).type(MediaType.TEXT_PLAIN).build());
     }
 }
-
-

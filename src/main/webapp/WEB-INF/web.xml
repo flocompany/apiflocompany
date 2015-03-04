@@ -22,13 +22,15 @@
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
+  
+  
   <servlet>
 		<servlet-name>Songsend_user_admin</servlet-name>
 		<servlet-class>com.flocompany.servlet.UserAdminServlet</servlet-class>
   </servlet>
   <servlet>
-		<servlet-name>Songsend_parametre_admin</servlet-name>
-		<servlet-class>com.flocompany.servlet.ParametreAdminServlet</servlet-class>
+		<servlet-name>Songsend_parameter_admin</servlet-name>
+		<servlet-class>com.flocompany.servlet.ParameterAdminServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -40,8 +42,8 @@
 	<url-pattern>/songsend_user_admin</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
-	<servlet-name>Songsend_parametre_admin</servlet-name>
-	<url-pattern>/songsend_parametre_admin</url-pattern>
+	<servlet-name>Songsend_parameter_admin</servlet-name>
+	<url-pattern>/songsend_parameter_admin</url-pattern>
   </servlet-mapping>  
   
 
@@ -50,4 +52,26 @@
   	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
+	
+	
+	<security-constraint>
+	    <web-resource-collection>
+	    	<web-resource-name>songsend_user_admin</web-resource-name>
+	     	<url-pattern>/songsend_user_admin</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	        <role-name>admin</role-name>
+	    </auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+	    <web-resource-collection>
+	    	<web-resource-name>songsend_parameter_admin</web-resource-name>
+	     	<url-pattern>/songsend_parameter_admin</url-pattern>
+	    </web-resource-collection>
+	    <auth-constraint>
+	        <role-name>admin</role-name>
+	    </auth-constraint>
+	</security-constraint>
 </web-app>

@@ -1,11 +1,12 @@
 package com.flocompany.dao.model;
 
+import com.flocompany.rest.model.ParameterDTO;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
 @Entity
-public class Parametre {
+public class Parameter {
 
 	@Id Long id;
 	@Index String name;
@@ -14,14 +15,17 @@ public class Parametre {
 	
 	
 	
-	public Parametre(Long id, String name, String value) {
+	public Parameter() {
+	}
+
+	public Parameter(Long id, String name, String value) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.value = value;
 	}
 	
-	public Parametre(String name, String value) {
+	public Parameter(String name, String value) {
 		super();
 		this.name = name;
 		this.value = value;
@@ -50,5 +54,17 @@ public class Parametre {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+    
+    public ParameterDTO toDto(){
+    	ParameterDTO p = new ParameterDTO(id, name, value);
+   	 	return p;
+    }
+ 
+
+    public void initFromDTO(ParameterDTO dto){
+   	 this.name=dto.getName();
+   	 this.value=dto.getValue();
+    }
 	
 }

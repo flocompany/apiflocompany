@@ -1,6 +1,8 @@
 package com.flocompany.servlet;
 
-import static com.flocompany.util.RestUtil.*;
+import static com.flocompany.util.RestUtil.MAIL;
+import static com.flocompany.util.RestUtil.PSEUDO;
+import static com.flocompany.util.RestUtil.PWD;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,10 +21,8 @@ import com.flocompany.util.RestUtil;
 
 public class UserAdminServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(UserAdminServlet.class.getName());
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		System.out.println("**********GET");
 		req.setCharacterEncoding("UTF-8");
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
@@ -30,7 +30,7 @@ public class UserAdminServlet extends HttpServlet {
 		String action = req.getParameter("action");
 		
 		if(action!=null){
-			if(action.equals("add")){
+			if(action.equals("signup")){
 				String pseudo = req.getParameter("pseudo");
 				String mail = req.getParameter("mail");
 				String pwd = req.getParameter("pwd");
@@ -38,15 +38,35 @@ public class UserAdminServlet extends HttpServlet {
 				params.add(PSEUDO + "=" + pseudo);
 				params.add(MAIL + "=" +mail);
 				params.add(PWD + "=" +pwd);
-				String restResult = RestUtil.callRestService("person/signup", "POST",  MediaType.APPLICATION_JSON, params);
+				String restResult = RestUtil.callRestService(RestUtil.PATH_SIGNUP, "POST",  MediaType.APPLICATION_JSON, params);
 				req.setAttribute("restResult", restResult);
 			}else if(action.equals("delete")){
 				String id = req.getParameter("id");
 				if(id!=null){
 					UserImpl.getInstance().deleteUser(Long.valueOf(id));
 				}
-			}else{
-			   
+			}else if(action.equals("login")){
+				String pseudo = req.getParameter("pseudo");
+				String pwd = req.getParameter("pwd");
+				List<String> params = new ArrayList<String>();
+				params.add(PSEUDO + "=" + pseudo);
+				params.add(PWD + "=" +pwd);
+				String restResult = RestUtil.callRestService(RestUtil.PATH_LOGIN, "POST",  MediaType.APPLICATION_JSON, params);
+				req.setAttribute("restResult", restResult);
+			}else if(action.equals("demo")){
+				String restResult = RestUtil.callRestService("person", "GET",  MediaType.TEXT_PLAIN, null);
+				req.setAttribute("restResult", restResult);
+			}else if(action.equals("add")){
+				String pseudo = req.getParameter("pseudo");
+				String mail = req.getParameter("mail");
+				String pwd = req.getParameter("pwd");
+				UserImpl.getInstance().addUser(pseudo, mail, pwd);
+			}else if(action.equals("search")){
+				List<String> params = new ArrayList<String>();
+				String pseudo = req.getParameter("pseudo");;
+				params.add(PSEUDO + "=" + pseudo);
+				String restResult = RestUtil.callRestService("person/search", "GET",  MediaType.APPLICATION_JSON, params);
+				req.setAttribute("restResult", restResult);
 			}
 		}
 		
@@ -54,26 +74,24 @@ public class UserAdminServlet extends HttpServlet {
 		
 		List<PersonDTO> users = UserImpl.getInstance().findAllUsers();
 		
-		req.setAttribute("parametreList", users);
+		req.setAttribute("userList", users);
 		
 		try {
-			req.getRequestDispatcher("/jsp/parametre_admin.jsp").forward(req, resp);
+			req.getRequestDispatcher("/jsp/user_admin.jsp").forward(req, resp);
 		} catch (ServletException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		System.out.println("**********POST");
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
 		this.doGet(req, resp);
 	}
 	public void init(){
-		UserImpl.getInstance().addUser("titteuf", "titteuf@gmail.com", "AZERTY1");
-		UserImpl.getInstance().addUser("tazman", "tazman@voila.fr", "123356");
-		UserImpl.getInstance().addUser("titi", "titi@yahoo.fr", "Defebbdf");
-		UserImpl.getInstance().addUser("tata32", "tata32@voila.fr", "dsgbtrhrtf");
+		UserImpl.getInstance().init();
 	}
 	
 	

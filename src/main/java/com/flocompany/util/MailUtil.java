@@ -47,7 +47,7 @@ public class MailUtil {
 	     try {
 	         Message msg = new MimeMessage(session);
 	         try {
-				msg.setFrom(new InternetAddress("admin@example.com", "Example.com Admin"));
+				msg.setFrom(new InternetAddress(from, "Administrator"));
 				for(String mailto : getTo()){
 					msg.addRecipient(Message.RecipientType.TO,
 			                  new InternetAddress(mailto, mailto));
