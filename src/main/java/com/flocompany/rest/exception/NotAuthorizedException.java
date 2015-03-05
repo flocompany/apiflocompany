@@ -1,13 +1,14 @@
 package com.flocompany.rest.exception;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 public class NotAuthorizedException extends WebApplicationException {
     public NotAuthorizedException(String message) {
         super(Response.status(Response.Status.BAD_REQUEST)
-            .entity(message).type(MediaType.TEXT_PLAIN).build());
+                .entity(message).header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN+"; charset=utf-8").type(MediaType.TEXT_PLAIN+"; charset=utf-8").build());
     }
 }
 

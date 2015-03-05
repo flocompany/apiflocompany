@@ -78,14 +78,18 @@ public class PersonResource extends AbstractResource{
     
     @GET
     @Path("search")
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public PersonDTO findPerson(@QueryParam(PSEUDO) String pseudo) {
-    	System.out.println("findperson" + pseudo);
+    	System.out.println("findperson >>>>>>>>>>>>>>>>>>>>>" + pseudo);
     	PersonDTO  person = UserImpl.getInstance().findUserByPseudo(pseudo);
     	if(person==null){
-    		throw new ResourceNotFindException(
-					"Sorry, not user found for " + pseudo +".");
+    		person = UserImpl.getInstance().findUserByEmail(pseudo);
+    		if(person==null){
+	    		throw new ResourceNotFindException(
+						"Sorry, not user found for " + pseudo +".");
+    		}
     	}
+    	
         return person;
     }
     
@@ -97,59 +101,58 @@ public class PersonResource extends AbstractResource{
     @Path("signup")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public PersonDTO signUpPerson(
-            MultivaluedMap<String, String> personParams
-            ) {
-			String pseudo = personParams.getFirst(PSEUDO);
-			String mail = personParams.getFirst(MAIL);
-			String pwd = personParams.getFirst(PWD);
+    public PersonDTO signUpPerson(MultivaluedMap<String, String> personParams) {
+		String pseudo = personParams.getFirst(PSEUDO);
+		String mail = personParams.getFirst(MAIL);
+		String pwd = personParams.getFirst(PWD);
 
-			if (isEmpty(pseudo) || isEmpty(mail) || isEmpty(pwd)
-					|| isBlank(pseudo) || isBlank(mail) || isBlank(pwd)) {
-				throw new NotAuthorizedException(
-						"Sorry, all fiels must be enter");
-			}
+		if (isEmpty(pseudo) || isEmpty(mail) || isEmpty(pwd)
+				|| isBlank(pseudo) || isBlank(mail) || isBlank(pwd)) {
+			throw new NotAuthorizedException(
+					"Sorry, all fiels must be enter");
+		}
 
-			if (!isValidMail(mail)) {
-				throw new NotAuthorizedException(
-						"Sorry, it is not a valid email");
-			}
+		if (!isValidMail(mail)) {
+			throw new NotAuthorizedException(
+					"Sorry, it is not a valid email");
+		}
 
-			PersonDTO personPseudo = UserImpl.getInstance().findUserByPseudo(
-					pseudo);
-			if (personPseudo != null) {
-				throw new NotAuthorizedException(
-						"Sorry, pseudo already exist!!");
-			}
-			PersonDTO personMail = UserImpl.getInstance().findUserByEmail(mail);
-			if (personMail != null) {
-				throw new NotAuthorizedException("Sorry, email already exist!!");
-			}
+		PersonDTO personPseudo = UserImpl.getInstance().findUserByPseudo(
+				pseudo);
+		if (personPseudo != null) {
+			throw new NotAuthorizedException(
+					"Sorry, pseudo already exist!!");
+		}
+		
+		PersonDTO personMail = UserImpl.getInstance().findUserByEmail(mail);
+		if (personMail != null) {
+			throw new NotAuthorizedException("Sorry, email already exist!!");
+		}
 
-			person.setPseudo(pseudo);
-			person.setEmail(mail);
-			person.setPwd(pwd);
+		person.setPseudo(pseudo);
+		person.setEmail(mail);
+		person.setPwd(pwd);
 
-			person = UserImpl.getInstance().addUser(person);
+		person = UserImpl.getInstance().addUser(person);
 
-			// Send mail
-			List<String> mailTo = new ArrayList<String>();
-			mailTo.add(mail);
-			try {
-				MailUtil mailToSend = new MailUtil(
-						mailTo,
-						null,
-						null,
-						ParameterImpl.getInstance().getValueByName(MAIL_ADMIN),
-						"SongSend : ",
-						"Welcome "
-								+ person.getPseudo()
-								+ " !!, We confirm your new account in the application. Best regards.");
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				e.printStackTrace();
-			}
+		// Send mail
+		List<String> mailTo = new ArrayList<String>();
+		mailTo.add(mail);
+		try {
+			MailUtil mailToSend = new MailUtil(
+					mailTo,
+					null,
+					null,
+					ParameterImpl.getInstance().getValueByName(MAIL_ADMIN),
+					"SongSend : ",
+					"Welcome "
+							+ person.getPseudo()
+							+ " !!, We confirm your new account in the application. Best regards.");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
 
 
 		return person; 

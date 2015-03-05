@@ -19,7 +19,7 @@ import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.model.PersonDTO;
 import com.flocompany.util.RestUtil;
 
-public class UserAdminServlet extends HttpServlet {
+public class UserAdminServlet extends AbstractServlet {
 
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -65,7 +65,7 @@ public class UserAdminServlet extends HttpServlet {
 				List<String> params = new ArrayList<String>();
 				String pseudo = req.getParameter("pseudo");;
 				params.add(PSEUDO + "=" + pseudo);
-				String restResult = RestUtil.callRestService("person/search", "GET",  MediaType.APPLICATION_JSON, params);
+				String restResult = RestUtil.callRestService("person/search", "GET",  MediaType.APPLICATION_JSON  + ";charset=utf-8", params);
 				req.setAttribute("restResult", restResult);
 			}
 		}
@@ -90,9 +90,7 @@ public class UserAdminServlet extends HttpServlet {
 		req.setCharacterEncoding("UTF-8");
 		this.doGet(req, resp);
 	}
-	public void init(){
-		UserImpl.getInstance().init();
-	}
+
 	
 	
 	

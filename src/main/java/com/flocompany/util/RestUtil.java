@@ -59,6 +59,9 @@ public class RestUtil {
 		  HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
 		  httpConnection.setRequestProperty("Accept", type);
 		  httpConnection.setInstanceFollowRedirects(false);
+	  	  httpConnection.setRequestProperty("Accept-Charset", "utf8");
+
+		  httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "utf8");
 //		  httpConnection.setConnectTimeout(60000);  //60 Seconds
 //		  httpConnection.setReadTimeout(60000);  //60 Seconds
 		  
@@ -68,9 +71,7 @@ public class RestUtil {
 			  httpConnection.setRequestMethod(method);
 		  }
 		  if(method.equals("POST")){
-		  	  httpConnection.setRequestProperty("Accept-Charset", "utf8");
-			  httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "utf8");
-			  OutputStreamWriter writer = new OutputStreamWriter(httpConnection.getOutputStream());
+			  OutputStreamWriter writer = new OutputStreamWriter(httpConnection.getOutputStream(), "UTF-8");
 			  System.out.println(parametres);
 			  writer.write(parametres);
 			  writer.flush();
@@ -83,14 +84,27 @@ public class RestUtil {
 			    output = "HTTP GET Request Failed with Error code : "
 			                + httpConnection.getResponseCode();
 		  }
-	      BufferedReader responseBuffer = new BufferedReader(new InputStreamReader((httpConnection.getInputStream())));
-	 
 		  
-		  System.out.println("Output from Server:  \n");
-		 
-		  while ((output = responseBuffer.readLine()) != null) {
-			  result=output;
-		  }
+//	      BufferedReader responseBuffer = new BufferedReader(new InputStreamReader((httpConnection.getInputStream())));
+//	 
+//
+//		  
+//		  System.out.println("Output from Server:  \n");
+//		 
+//		  while ((output = responseBuffer.readLine()) != null) {
+//			  result=output;
+//		  }
+		  
+		  
+			InputStreamReader ipsr=new InputStreamReader(httpConnection.getInputStream(), "UTF-8");
+			BufferedReader br=new BufferedReader(ipsr);
+			String ligne;
+			while ((ligne=br.readLine())!=null){
+				System.out.println(ligne);
+				result+=ligne;
+			}
+			br.close(); 
+		  
 	      httpConnection.disconnect();
 	      return result;
 	      } catch (MalformedURLException e) {

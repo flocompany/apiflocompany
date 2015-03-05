@@ -21,7 +21,7 @@ import com.flocompany.rest.model.ParameterDTO;
 import com.flocompany.rest.model.PersonDTO;
 import com.flocompany.util.RestUtil;
 
-public class ParameterAdminServlet extends HttpServlet {
+public class ParameterAdminServlet extends AbstractServlet {
 
 	private static final Logger log = Logger.getLogger(ParameterAdminServlet.class.getName());
 	
@@ -58,9 +58,6 @@ public class ParameterAdminServlet extends HttpServlet {
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");
 		this.doGet(req, resp);
-	}
-	public void init(){
-		ParameterImpl.getInstance().init();
 	}
 	
 	
