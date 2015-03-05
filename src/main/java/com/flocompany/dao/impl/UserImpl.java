@@ -90,7 +90,6 @@ public class UserImpl {
 	 * @return
 	 */
 	public List<PersonDTO> findAllUsers(){
-		// Retourne tous les personnages dont la vie est supérieure à 50
 		List<Person> users = ofy().load().type(Person.class).list();
 		List<PersonDTO> results = new ArrayList<PersonDTO>();
 		for(Person p : users){
@@ -148,4 +147,25 @@ public class UserImpl {
 		}
 		return result;
 	}
+	
+	/** Get Users by ids
+	 * @return
+	 */
+	public List<PersonDTO> findUsersByIds(List<Long> idPersons){
+
+		List<PersonDTO> results = new ArrayList<PersonDTO>();
+		List<Key<Person>> keys = new ArrayList<Key<Person>>();
+		for(Long id : idPersons){
+			keys.add(Key.create(Person.class, id));
+		}
+		if(keys.size()>0){
+			List<Person> users = ofy().load().type(Person.class).filterKey("in", keys).list();
+			for(Person p : users){
+				results.add(p.toDto());
+			}
+		}
+		
+		return results;
+	}
+	
 }

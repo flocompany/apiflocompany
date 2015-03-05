@@ -20,6 +20,7 @@ public class RestUtil {
 	
 	
 	//Resource parameter of Person
+	public final static String ID = "id";
 	public final static String PSEUDO = "pseudo";
 	public final static String MAIL = "mail";
 	public final static String PWD = "pwd";
@@ -30,89 +31,87 @@ public class RestUtil {
 	public final static String URL_WEB_SERVICE = "url_web_service";
 	public final static String MAIL_ADMIN = "mail_admin";
 	
+	//Friend status
+	public final static String ACCEPTED = "accepted";
+	public final static String REFUSED = "refused";
+	public final static String BLOCKED = "blocked";
 	
 	
-	public static String callRestService(String path, String method, String type, List<String> params){
+	
+	public static String callRestService(String path, String method,
+		String type, List<String> params) {
 		String result = "";
-	try {
+		try {
 
-		  String parametres="";
-		  String output;
-		  String url = ParameterImpl.getInstance().getValueByName(URL_WEB_SERVICE) + path;
-		  int i=0;
-		  if(params!=null){
-			  for(String param : params){
-				  if(i==0){
-					  parametres=param;
-				  }else{
-					  parametres+="&"+param;
-				  }
-				  i++;
-			  }
-		  }
-		  if(method.equals("GET")){
-			  url+= "?"+ parametres;
-		  }
-		  URL restServiceURL = new URL(url);
-		  System.out.println(url);
-		  
-		  HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL.openConnection();
-		  httpConnection.setRequestProperty("Accept", type);
-		  httpConnection.setInstanceFollowRedirects(false);
-	  	  httpConnection.setRequestProperty("Accept-Charset", "utf8");
-
-		  httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "utf8");
-//		  httpConnection.setConnectTimeout(60000);  //60 Seconds
-//		  httpConnection.setReadTimeout(60000);  //60 Seconds
-		  
-		  httpConnection.setDoOutput(true); // Triggers POST.
-
-		  if(method.equals("GET")){
-			  httpConnection.setRequestMethod(method);
-		  }
-		  if(method.equals("POST")){
-			  OutputStreamWriter writer = new OutputStreamWriter(httpConnection.getOutputStream(), "UTF-8");
-			  System.out.println(parametres);
-			  writer.write(parametres);
-			  writer.flush();
-		  }
-		 
-		  
-		  
-		  
-		  if (httpConnection.getResponseCode() != 200) {
-			    output = "HTTP GET Request Failed with Error code : "
-			                + httpConnection.getResponseCode();
-		  }
-		  
-//	      BufferedReader responseBuffer = new BufferedReader(new InputStreamReader((httpConnection.getInputStream())));
-//	 
-//
-//		  
-//		  System.out.println("Output from Server:  \n");
-//		 
-//		  while ((output = responseBuffer.readLine()) != null) {
-//			  result=output;
-//		  }
-		  
-		  
-			InputStreamReader ipsr=new InputStreamReader(httpConnection.getInputStream(), "UTF-8");
-			BufferedReader br=new BufferedReader(ipsr);
-			String ligne;
-			while ((ligne=br.readLine())!=null){
-				System.out.println(ligne);
-				result+=ligne;
+			String parametres = "";
+			String output;
+			String url = ParameterImpl.getInstance().getValueByName(
+					URL_WEB_SERVICE)
+					+ path;
+			int i = 0;
+			if (params != null) {
+				for (String param : params) {
+					if (i == 0) {
+						parametres = param;
+					} else {
+						parametres += "&" + param;
+					}
+					i++;
+				}
 			}
-			br.close(); 
-		  
-	      httpConnection.disconnect();
-	      return result;
-	      } catch (MalformedURLException e) {
-	            e.printStackTrace();
-	      } catch (IOException e) {
-	            e.printStackTrace();
-		  }
-		  return result;
-	
+			if (method.equals("GET")) {
+				url += "?" + parametres;
+			}
+			URL restServiceURL = new URL(url);
+			System.out.println(url);
+
+			HttpURLConnection httpConnection = (HttpURLConnection) restServiceURL
+					.openConnection();
+			httpConnection.setRequestProperty("Accept", type);
+			httpConnection.setInstanceFollowRedirects(false);
+			httpConnection.setRequestProperty("Accept-Charset", "utf8");
+
+			httpConnection.setRequestProperty("Content-Type",
+					"application/x-www-form-urlencoded;charset=" + "utf8");
+			// httpConnection.setConnectTimeout(60000); //60 Seconds
+			// httpConnection.setReadTimeout(60000); //60 Seconds
+
+			httpConnection.setDoOutput(true); // Triggers POST.
+
+			if (method.equals("GET")) {
+				httpConnection.setRequestMethod(method);
+			}
+			if (method.equals("POST")) {
+				OutputStreamWriter writer = new OutputStreamWriter(
+						httpConnection.getOutputStream(), "UTF-8");
+				System.out.println(parametres);
+				writer.write(parametres);
+				writer.flush();
+			}
+
+			if (httpConnection.getResponseCode() != 200) {
+				output = "HTTP GET Request Failed with Error code : "
+						+ httpConnection.getResponseCode();
+			}
+
+			InputStreamReader ipsr = new InputStreamReader(
+					httpConnection.getInputStream(), "UTF-8");
+			BufferedReader br = new BufferedReader(ipsr);
+			String ligne;
+			while ((ligne = br.readLine()) != null) {
+				System.out.println(ligne);
+				result += ligne;
+			}
+			br.close();
+
+			httpConnection.disconnect();
+			return result;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+
 	}
 }
