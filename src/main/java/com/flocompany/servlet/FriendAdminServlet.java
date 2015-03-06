@@ -1,7 +1,5 @@
 package com.flocompany.servlet;
 
-import static com.flocompany.util.RestUtil.PSEUDO;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +40,14 @@ public class FriendAdminServlet extends AbstractServlet {
 				String person = req.getParameter("idPerson");
 				String status = req.getParameter("status");
 				FriendImpl.getInstance().addFriend(applicant, person);
+			}else if(action.equals("addWs")){
+				String applicant = req.getParameter("idPersonApplicant");
+				String person = req.getParameter("idPerson");
+				List<String> params = new ArrayList<String>();
+				params.add(RestUtil.ID_APPLICANT + "=" + applicant);
+				params.add(RestUtil.ID_PERSON + "=" + person);
+				String restResult = RestUtil.callRestService(RestUtil.PATH_ADD_FRIEND, "POST",  MediaType.APPLICATION_JSON, params);
+				req.setAttribute("restResult", restResult);
 			}else if(action.equals("mylist")){
 				List<String> params = new ArrayList<String>();
 				String id = req.getParameter("id");

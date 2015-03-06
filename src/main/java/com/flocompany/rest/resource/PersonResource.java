@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -144,13 +145,17 @@ public class PersonResource extends AbstractResource{
 					null,
 					null,
 					ParameterImpl.getInstance().getValueByName(MAIL_ADMIN),
-					"SongSend : ",
-					"Welcome "
+					"WELCOME TO SONGSEND",
+					"Hello "
 							+ person.getPseudo()
 							+ " !!, We confirm your new account in the application. Best regards.");
+			mailToSend.envoieMails();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (MessagingException e) {
+			e.printStackTrace();
+		} catch (NamingException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -195,7 +200,7 @@ public class PersonResource extends AbstractResource{
 				}
 			}
 
-			testPrivilege(String.valueOf(person.getId()), person.getPwd());
+//			testPrivilege(String.valueOf(person.getId()), person.getPwd());
 
         return person;   
     }

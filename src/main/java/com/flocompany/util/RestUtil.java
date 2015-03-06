@@ -17,6 +17,9 @@ public class RestUtil {
 	// PATH of the different rest service
 	public final static String PATH_SIGNUP = "person/signup";
 	public final static String PATH_LOGIN = "person/login";
+	public final static String PATH_ADD_FRIEND = "friend/add";
+	public final static String PATH_SEARCH_PERSON = "person/search";
+	public final static String PATH_LIST_FRIEND = "friend/mylist";
 	
 	
 	//Resource parameter of Person
@@ -24,6 +27,11 @@ public class RestUtil {
 	public final static String PSEUDO = "pseudo";
 	public final static String MAIL = "mail";
 	public final static String PWD = "pwd";
+	
+	//Resource parameter of Friend
+	public final static String ID_FRIEND = "id_friend";
+	public final static String ID_APPLICANT = "id_applicant";
+	public final static String ID_PERSON = "id_person";
 	
 	//Resource parameter of Parametre
 	public final static String NAME = "name";

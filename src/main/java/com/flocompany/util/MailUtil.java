@@ -40,7 +40,7 @@ public class MailUtil {
 	 * @throws MessagingException
 	 * @throws UnsupportedEncodingException 
 	 */
-	public void envoieMails(final List<MailUtil> mails) throws NamingException, MessagingException, UnsupportedEncodingException {
+	public void envoieMails() throws NamingException, MessagingException, UnsupportedEncodingException {
 		 Properties props = new Properties();
 	     Session session = Session.getDefaultInstance(props, null);
 

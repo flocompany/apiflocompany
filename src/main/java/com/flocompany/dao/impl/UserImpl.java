@@ -5,8 +5,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
+import com.flocompany.dao.model.Friend;
 import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.PersonDTO;
 import com.googlecode.objectify.Key;
@@ -66,8 +68,6 @@ public class UserImpl {
 	public long addUser(String pseudo, String mail, String pwd){
 		Person p = new Person(pseudo, mail, pwd);
 		Key<Person> key = ofy().save().entity(p).now(); 
-		System.out.println("id >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + key.getId());
-		
 		return key.getId();
 	}
 	
@@ -90,7 +90,7 @@ public class UserImpl {
 	 * @return
 	 */
 	public List<PersonDTO> findAllUsers(){
-		List<Person> users = ofy().load().type(Person.class).list();
+		List<Person> users = ofy().cache(false).load().type(Person.class).ancestor(Key.create(Person.class, "Persons")).list();
 		List<PersonDTO> results = new ArrayList<PersonDTO>();
 		for(Person p : users){
 			results.add(p.toDto());
@@ -104,7 +104,7 @@ public class UserImpl {
 	 * @return
 	 */
 	public PersonDTO findUserByPseudo(final String pseudo){
-		Person user = ofy().load().type(Person.class).filter("pseudo",pseudo).first().now();
+		Person user = ofy().cache(false).load().type(Person.class).ancestor(Key.create(Person.class, "Persons")).filter("pseudo",pseudo).first().now();
 		PersonDTO result = null;
 		if (user!=null){
 			result=user.toDto();
@@ -118,7 +118,7 @@ public class UserImpl {
 	 * @return
 	 */
 	public PersonDTO findUserByEmail(final String mail){
-		Person user = ofy().load().type(Person.class).filter("email",mail).first().now();
+		Person user = ofy().cache(false).load().type(Person.class).ancestor(Key.create(Person.class, "Persons")).filter("email",mail).first().now();
 		PersonDTO result = null;
 		if (user!=null){
 			result=user.toDto();
@@ -132,16 +132,15 @@ public class UserImpl {
 	 * @return
 	 */
 	public boolean deleteUser(long id){
-		Person p = ofy().load().type(Person.class).id(id).now();
-		
-		ofy().delete().entity(p).now();
+		Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
+		ofy().cache(false).delete().key(key).now();
 		return true;
 	}
 	
 	
 	public PersonDTO findById(String id){
 		PersonDTO result = null;
-		Person p = ofy().load().type(Person.class).id(Long.valueOf(id)).now();
+		Person p = ofy().cache(false).load().key(Key.create(Key.create(Person.class, "Persons"), Person.class, Long.valueOf(id))).now();
 		if(p !=null){
 			result = p.toDto();
 		}
@@ -156,12 +155,13 @@ public class UserImpl {
 		List<PersonDTO> results = new ArrayList<PersonDTO>();
 		List<Key<Person>> keys = new ArrayList<Key<Person>>();
 		for(Long id : idPersons){
-			keys.add(Key.create(Person.class, id));
+			Key<Person> m = Key.create(Key.create(Person.class, "Persons"), Person.class, id);
+			keys.add(m);
 		}
 		if(keys.size()>0){
-			List<Person> users = ofy().load().type(Person.class).filterKey("in", keys).list();
-			for(Person p : users){
-				results.add(p.toDto());
+			Map<Key<Person>, Person> users = ofy().cache(false).load().keys(keys);
+			for (Key<Person> mapKey : users.keySet()) {
+				results.add(users.get(mapKey).toDto());
 			}
 		}
 		

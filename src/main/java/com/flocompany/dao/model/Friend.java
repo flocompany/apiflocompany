@@ -1,11 +1,12 @@
 package com.flocompany.dao.model;
 
 import com.flocompany.rest.model.FriendDTO;
-import com.flocompany.rest.model.ParameterDTO;
 import com.flocompany.util.RestUtil;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
 @Entity
 public class Friend {
@@ -14,6 +15,8 @@ public class Friend {
 	@Index Long idPersonApplicant;
 	@Index Long idPerson;
 	private String status=RestUtil.ACCEPTED;
+	
+	@Parent Key<Friend> parent;
 	
 	public Friend() {
 		super();
@@ -24,6 +27,7 @@ public class Friend {
 		super();
 		this.idPersonApplicant = idPersonApplicant;
 		this.idPerson = idPerson;
+        this.parent = Key.create(Friend.class, "friends");
 	}
     public Friend(Long idPersonApplicant, Long idPerson, String status) {
 		super();

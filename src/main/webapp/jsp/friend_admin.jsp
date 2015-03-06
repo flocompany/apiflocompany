@@ -50,6 +50,7 @@
 		<select name="action">
 			  <option value="mylist">myList (WS, GET)</option>
 			  <option value="add">add (Not WS))</option>
+			  <option value="addWs">add (WS))</option>
 			  <option value="update">update (Not WS))</option>
 			  <option value="other">other</option>
 		</select> 

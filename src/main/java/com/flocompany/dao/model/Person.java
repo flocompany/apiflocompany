@@ -1,9 +1,11 @@
 package com.flocompany.dao.model;
 
 import com.flocompany.rest.model.PersonDTO;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Parent;
 
 
 @Entity
@@ -17,8 +19,11 @@ public class Person {
     private String pwd;
     private String firstName;
     private String lastName;
-         
-    public Person() {}
+
+	@Parent Key<Person> parent  = Key.create(Person.class, "Persons");
+	
+    public Person() {
+    }
     
     public Person(String pseudo, String email, String pwd) {
     	super();

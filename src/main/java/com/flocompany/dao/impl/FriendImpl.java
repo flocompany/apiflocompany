@@ -1,18 +1,12 @@
 package com.flocompany.dao.impl;
 
-import static com.flocompany.util.RestUtil.MAIL_ADMIN;
-import static com.flocompany.util.RestUtil.URL_WEB_SERVICE;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.flocompany.dao.model.Friend;
-import com.flocompany.dao.model.Parameter;
-import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.FriendDTO;
-import com.flocompany.rest.model.ParameterDTO;
-import com.flocompany.rest.model.PersonDTO;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -77,11 +71,12 @@ public class FriendImpl {
 	 * @return
 	 */
 	public long updateFriend(String id, String status){
-		Friend f = ofy().load().type(Friend.class).id(Long.valueOf(id)).now();
+		Key<Friend> key = Key.create(Key.create(Key.create(Friend.class, "friends"), Friend.class, Long.valueOf(id)).getString());
+		Friend f = ofy().cache(false).load().type(Friend.class).id(Long.valueOf(id)).now();
 		if(f!=null){
 			f.setStatus(status);
-			Key<Friend> key = ofy().save().entity(f).now(); 
-			return key.getId();
+			Key<Friend> keyToSave = ofy().cache(false).save().entity(f).now(); 
+			return keyToSave.getId();
 		}
 		return -1;
 	}
@@ -91,7 +86,7 @@ public class FriendImpl {
 	 * @return
 	 */
 	public Friend findFriend(String idApplicant, String idPerson){
-		Friend friends = ofy().load().type(Friend.class).filter("idPersonApplicant", Long.valueOf(idApplicant)).filter("idPerson", Long.valueOf(idPerson)).first().now();
+		Friend friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idApplicant)).filter("idPerson", Long.valueOf(idPerson)).first().now();
 		return friends;
 	}
 	
@@ -102,7 +97,7 @@ public class FriendImpl {
 	 * @return
 	 */
 	public List<FriendDTO> findAllFriends(){
-		List<Friend> friends = ofy().load().type(Friend.class).list();
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).list();
 		List<FriendDTO> results = new ArrayList<FriendDTO>();
 		for(Friend f : friends){
 			results.add(f.toDto());
@@ -116,20 +111,23 @@ public class FriendImpl {
 	 */
 	public List<Long> findFriendByPerson(String idPerson){
 		List<Long> results = new ArrayList<Long>();
-		List<Friend> friends = ofy().load().type(Friend.class).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
-		if(friends.size()<=0){
-			System.out.println("nullllllllllllllllllllll");
-			 friends = ofy().load().type(Friend.class).filter("idPerson", Long.valueOf(idPerson)).list();
-
-				System.out.println("friend.size" + friends.size());
-			 if(friends.size()>0){
-				for(Friend f : friends){
-					results.add(f.getIdPerson());
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
+		if (friends.size() <= 0) {
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			if (friends.size() > 0) {
+				for (Friend f : friends) {
+					results.add(f.getIdPersonApplicant());
 				}
-			 }
-		}else{
-			for(Friend f : friends){
+			}
+		} else {
+			for (Friend f : friends) {
 				results.add(f.getIdPerson());
+			}
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			if (friends.size() > 0) {
+				for (Friend f : friends) {
+					results.add(f.getIdPersonApplicant());
+				}
 			}
 		}
 		return results;
@@ -142,9 +140,8 @@ public class FriendImpl {
 	 * @return
 	 */
 	public boolean delete(long id){
-		Friend p = ofy().load().type(Friend.class).id(id).now();
-		
-		ofy().delete().entity(p).now();
+		Key<Friend> key = Key.create(Key.create(Key.create(Friend.class, "friends"), Friend.class, id).getString());
+		ofy().cache(false).delete().key(key).now();
 		return true;
 	}
 	
