@@ -12,17 +12,31 @@
 	        <url-pattern>/*</url-pattern>
 	</filter-mapping>  
   
+
   <servlet>
     <servlet-name>SongRestService</servlet-name>
     <!-- servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class -->
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+   
+    <!-- Register JAX-RS Application, if needed. -->
+    <init-param>
+        <param-name>javax.ws.rs.Application</param-name>
+        <param-value>com.flocompany.rest.resource.SongSendApplication</param-value>
+    </init-param>  
+    <!-- Register resources and providers under com.flocompany.rest.resource. -->
     <init-param>
         <param-name>jersey.config.server.provider.packages</param-name>
         <param-value>com.flocompany.rest.resource</param-value>
     </init-param>
+    
+    <!-- Register my custom provider (not needed if it's in my.package) AND LoggingFilter. -->
+    <init-param>
+        <param-name>jersey.config.server.provider.classnames</param-name>
+        <param-value>com.flocompany.util.ResponseCorsFilter;org.glassfish.jersey.filter.LoggingFilter</param-value>
+    </init-param>
+
     <load-on-startup>1</load-on-startup>
   </servlet>
-  
   
   <servlet>
 		<servlet-name>Songsend_user_admin</servlet-name>
