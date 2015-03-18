@@ -35,6 +35,11 @@
         <param-value>com.flocompany.util.ResponseCorsFilter;org.glassfish.jersey.filter.LoggingFilter</param-value>
     </init-param>
 
+	<init-param>
+	  <param-name>jersey.config.server.response.setStatusOverSendError</param-name>
+	  <param-value>true</param-value>
+	</init-param>
+
     <load-on-startup>1</load-on-startup>
   </servlet>
   
@@ -49,6 +54,10 @@
   <servlet>
 		<servlet-name>Songsend_parameter_admin</servlet-name>
 		<servlet-class>com.flocompany.servlet.ParameterAdminServlet</servlet-class>
+  </servlet>
+  <servlet>
+		<servlet-name>Songsend_song_admin</servlet-name>
+		<servlet-class>com.flocompany.servlet.SongAdminServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -66,6 +75,10 @@
   <servlet-mapping>
 	<servlet-name>Songsend_parameter_admin</servlet-name>
 	<url-pattern>/songsend_parameter_admin</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+	<servlet-name>Songsend_song_admin</servlet-name>
+	<url-pattern>/songsend_song_admin</url-pattern>
   </servlet-mapping>  
   
 

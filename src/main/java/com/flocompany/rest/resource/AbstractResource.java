@@ -1,7 +1,7 @@
 package com.flocompany.rest.resource;
 
 import com.flocompany.dao.impl.UserImpl;
-import com.flocompany.rest.exception.NotAuthorizedException;
+import com.flocompany.rest.exception.NotAcceptableException;
 import com.flocompany.rest.model.PersonDTO;
 
 public abstract class AbstractResource {
@@ -13,7 +13,7 @@ public abstract class AbstractResource {
 				return p;
 			}
 		}
-		throw new NotAuthorizedException("Sorry, you are not logged to the application.");
+		throw new NotAcceptableException("Sorry, you are not logged to the application.");
 	}
 	
 }

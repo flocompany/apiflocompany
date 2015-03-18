@@ -25,7 +25,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.flocompany.dao.impl.ParameterImpl;
 import com.flocompany.dao.impl.UserImpl;
-import com.flocompany.rest.exception.NotAuthorizedException;
+import com.flocompany.rest.exception.NotAcceptableException;
 import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.PersonDTO;
@@ -81,11 +81,10 @@ public class PersonResource extends AbstractResource{
     @Path("search")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public PersonDTO findPerson(@QueryParam(PSEUDO) String pseudo) {
-    	System.out.println("findperson >>>>>>>>>>>>>>>>>>>>>" + pseudo);
     	
-    	Response.ok().header("Access-Control-Allow-Origin", "*")
-		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-		.allow("OPTIONS").build();
+//    	Response.ok().header("Access-Control-Allow-Origin", "*")
+//		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+//		.allow("OPTIONS").build();
     	
     	PersonDTO  person = UserImpl.getInstance().findUserByPseudo(pseudo);
     	if(person==null){
@@ -121,13 +120,13 @@ public class PersonResource extends AbstractResource{
 		if (isEmpty(pseudo) || isEmpty(mail) || isEmpty(pwd)
 				|| isBlank(pseudo) || isBlank(mail) || isBlank(pwd)) {
 			System.out.println("111111");
-			throw new NotAuthorizedException(
+			throw new NotAcceptableException(
 					"Sorry, all fiels must be enter");
 		}
 
 		if (!isValidMail(mail)) {
 			System.out.println("222222");
-			throw new NotAuthorizedException(
+			throw new NotAcceptableException(
 					"Sorry, it is not a valid email");
 		}
 
@@ -135,14 +134,14 @@ public class PersonResource extends AbstractResource{
 				pseudo);
 		if (personPseudo != null) {
 			System.out.println("333333");
-			throw new NotAuthorizedException(
+			throw new NotAcceptableException(
 					"Sorry, pseudo already exist!!");
 		}
 		
 		PersonDTO personMail = UserImpl.getInstance().findUserByEmail(mail);
 		if (personMail != null) {
 			System.out.println("44444");
-			throw new NotAuthorizedException("Sorry, email already exist!!");
+			throw new NotAcceptableException("Sorry, email already exist!!");
 		}
 
 		person.setPseudo(pseudo);
@@ -170,14 +169,10 @@ public class PersonResource extends AbstractResource{
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		} catch (NamingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-
 		return person; 
-    }
-    
+    }    
     
     /** Rest Service witch authenticate the user
      * @param personParams
@@ -194,23 +189,23 @@ public class PersonResource extends AbstractResource{
 			String pwd = personParams.getFirst(PWD);
 
 			if (isEmpty(pseudoOrMail) || isEmpty(pwd) || isBlank(pseudoOrMail)	|| isBlank(pwd)) {
-				throw new NotAuthorizedException(
+				throw new NotAcceptableException(
 						"Sorry, all fiels must be enter.");
 			}
 			
 			person = UserImpl.getInstance().findUserByPseudo(pseudoOrMail);
 			if (person != null) {
 				if (!pwd.equals(person.getPwd())) {
-					throw new NotAuthorizedException("Sorry, bad password.");
+					throw new NotAcceptableException("Sorry, bad password.");
 				}
 			} else {
 				person = UserImpl.getInstance().findUserByEmail(pseudoOrMail);
 				if (person != null) {
 					if (!pwd.equals(person.getPwd())) {
-						throw new NotAuthorizedException("Sorry, bad password.");
+						throw new NotAcceptableException("Sorry, bad password.");
 					}
 				} else {
-					throw new NotAuthorizedException(
+					throw new NotAcceptableException(
 							"Sorry, pseudo or mail not exist.");
 				}
 			}

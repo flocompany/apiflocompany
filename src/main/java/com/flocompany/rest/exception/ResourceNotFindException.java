@@ -15,5 +15,4 @@ public class ResourceNotFindException extends WebApplicationException {
 //        		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").allow("OPTIONS").build());
 
     }
-
 }

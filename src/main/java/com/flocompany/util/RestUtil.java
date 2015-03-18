@@ -44,6 +44,9 @@ public class RestUtil {
 	public final static String REFUSED = "refused";
 	public final static String BLOCKED = "blocked";
 	
+	//Song status
+	public final static String PREMIUM = "premium";
+	public final static String FREE = "free";
 	
 	
 	public static String callRestService(String path, String method,
