@@ -158,7 +158,7 @@ public class PersonResource extends AbstractResource{
 					mailTo,
 					null,
 					null,
-					ParameterImpl.getInstance().getValueByName(MAIL_ADMIN),
+					ParameterImpl.getInstance().getValueByName(MAIL_PARAMETER),
 					"WELCOME TO SONGSEND",
 					"Hello "
 							+ person.getPseudo()

@@ -1,7 +1,8 @@
 package com.flocompany.dao.impl;
 
-import static com.flocompany.util.RestUtil.MAIL_ADMIN;
-import static com.flocompany.util.RestUtil.URL_WEB_SERVICE;
+import static com.flocompany.util.RestUtil.MAIL_PARAMETER;
+import static com.flocompany.util.RestUtil.URL_WEB_SERVICE_PARAMETER;
+import static com.flocompany.util.RestUtil.CATEGORY_PARAMETER;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import com.flocompany.dao.model.Parameter;
 import com.flocompany.rest.model.ParameterDTO;
+import com.flocompany.util.EnumCategorySong;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -37,8 +39,9 @@ public class ParameterImpl {
 	 * Initialise data of parameter
 	 */
 	public void init(){
-		initParametre(URL_WEB_SERVICE, "http://localhost/rest/");
-		initParametre(MAIL_ADMIN, "florent.courtiade@gmail.com");
+		initParametre(URL_WEB_SERVICE_PARAMETER, "http://localhost/rest/");
+		initParametre(MAIL_PARAMETER, "florent.courtiade@gmail.com");
+		initParametre(CATEGORY_PARAMETER, EnumCategorySong.NONE.getCode());
 	}
 	
 	/** Control if the user not exit before save
@@ -82,9 +85,22 @@ public class ParameterImpl {
 	 * @param name
 	 * @return
 	 */
-	public Parameter findParametre(final String name){
+	private Parameter findParametre(final String name){
 		Parameter parametre = ofy().load().type(Parameter.class).filter("name",name).first().now();
 		return parametre;
+	}
+	
+	/** Get a Parameter Entity by his name
+	 * @param name
+	 * @return
+	 */
+	public ParameterDTO findParametreDTO(final String name){
+		ParameterDTO result = null;
+		Parameter parametre = ofy().load().type(Parameter.class).filter("name",name).first().now();
+		if(parametre!=null){
+			result=parametre.toDto();
+		}
+		return result;
 	}
 	
 	/** Get the value of the parameter Entity by his name

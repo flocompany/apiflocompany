@@ -14,9 +14,11 @@ import com.googlecode.objectify.annotation.Parent;
 public class Song {
 
 	@Id Long id;
-	@Index String keyBlob;
-	private String group;
+	@Index String mp3Key;
+	@Index String oggKey;
+	@Index String category;
 	private String title;
+	private String extract;
 	private String description;
 	private String status=RestUtil.FREE;
 	
@@ -28,30 +30,33 @@ public class Song {
 
 	
 	
-	public Song(String keyBlob, String group, String title, String description) {
+	public Song(String mp3Key,String oggKey, String category, String title, String extract, String description) {
 		super();
-		this.keyBlob = keyBlob;
-		this.group = group;
+		this.mp3Key = mp3Key;
+		this.oggKey = oggKey;
+		this.category = category;
 		this.title = title;
+		this.extract = extract;
 		this.description = description;
 	}
 
 
 
-	public Song(Long id, String keyBlob, String group, String title,
-			String description, String status) {
+	public Song(Long id,String mp3Key,String oggKey, String category, String title, String extract, String description, String status) {
 		super();
 		this.id = id;
-		this.keyBlob = keyBlob;
-		this.group = group;
+		this.mp3Key = mp3Key;
+		this.oggKey = oggKey;
+		this.category = category;
 		this.title = title;
+		this.extract = extract;
 		this.description = description;
 		this.status = status;
 	}
 
 
 
-	public Long getId() {
+    public Long getId() {
 		return id;
 	}
 
@@ -63,26 +68,38 @@ public class Song {
 
 
 
-	public String getKeyBlob() {
-		return keyBlob;
+	public String getMp3Key() {
+		return mp3Key;
 	}
 
 
 
-	public void setKeyBlob(String keyBlob) {
-		this.keyBlob = keyBlob;
+	public void setMp3Key(String mp3Key) {
+		this.mp3Key = mp3Key;
 	}
 
 
 
-	public String getGroup() {
-		return group;
+	public String getOggKey() {
+		return oggKey;
 	}
 
 
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setOggKey(String oggKey) {
+		this.oggKey = oggKey;
+	}
+
+
+
+	public String getCategory() {
+		return category;
+	}
+
+
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 
@@ -95,6 +112,18 @@ public class Song {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+
+
+	public String getExtract() {
+		return extract;
+	}
+
+
+
+	public void setExtract(String extract) {
+		this.extract = extract;
 	}
 
 
@@ -121,18 +150,22 @@ public class Song {
 		this.status = status;
 	}
 
-    public SongDTO toDto(){
-    	SongDTO s = new SongDTO(keyBlob, group, title, description);
-    	s.setId(this.id);
+
+
+	public SongDTO toDto(){
+    	SongDTO s = new SongDTO(id, mp3Key, oggKey, category, title, extract, description, status);
    	 	return s;
     }
  
 
     public void initFromDTO(SongDTO dto){
-	   	 this.keyBlob=dto.getKeyBlob();
-	   	 this.group=dto.getGroup();
+	   	 this.mp3Key=dto.getMp3Key();
+	   	 this.oggKey=dto.getOggKey();
+	   	 this.category=dto.getCategory();
 	   	 this.title=dto.getTitle();
+	   	 this.extract=dto.getExtract();
 	   	 this.description=dto.getDescription();
+	   	 this.status=dto.getStatus();
     }
 	
 }

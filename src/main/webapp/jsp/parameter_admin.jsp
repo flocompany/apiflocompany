@@ -27,7 +27,7 @@
 			</tr>	
 		</table>
 		<input type="hidden" name="action" value="update" />
-		<input type="submit" class="save" title="Save" value="Save" />
+		<input type="submit" class="save" title="Modifier" value="Modifier" />
 	</form>
 	<hr />
 	<h2>Liste des parametres</h2>

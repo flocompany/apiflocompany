@@ -59,6 +59,10 @@
 		<servlet-name>Songsend_song_admin</servlet-name>
 		<servlet-class>com.flocompany.servlet.SongAdminServlet</servlet-class>
   </servlet>
+  <servlet>
+		<servlet-name>Songsend_song</servlet-name>
+		<servlet-class>com.flocompany.servlet.SongInterfaceServlet</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>SongRestService</servlet-name>
@@ -79,6 +83,10 @@
   <servlet-mapping>
 	<servlet-name>Songsend_song_admin</servlet-name>
 	<url-pattern>/songsend_song_admin</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+	<servlet-name>Songsend_song</servlet-name>
+	<url-pattern>/songsend_song</url-pattern>
   </servlet-mapping>  
   
 

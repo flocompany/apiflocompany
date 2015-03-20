@@ -11,7 +11,6 @@ public class SongSendApplication extends ResourceConfig  {
 	public SongSendApplication() {
  
 		packages("com.flocompany.rest.resource");
-		
         // Register my custom provider - not needed if it's in my.package.
         register(ResponseCorsFilter.class);
     }

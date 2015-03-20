@@ -36,17 +36,23 @@ public class RestUtil {
 	//Resource parameter of Parametre
 	public final static String NAME = "name";
 	public final static String VALUE = "value";
-	public final static String URL_WEB_SERVICE = "url_web_service";
-	public final static String MAIL_ADMIN = "mail_admin";
+	public final static String URL_WEB_SERVICE_PARAMETER = "url_web_service";
+	public final static String MAIL_PARAMETER = "mail_admin";
+	public final static String CATEGORY_PARAMETER = "category_admin";
 	
 	//Friend status
 	public final static String ACCEPTED = "accepted";
 	public final static String REFUSED = "refused";
 	public final static String BLOCKED = "blocked";
 	
+	//Resource parameter of Song
+	public final static String ID_SONG = "id";
+	public final static String CATEGORY_CODE = "category_code";
+	
 	//Song status
 	public final static String PREMIUM = "premium";
 	public final static String FREE = "free";
+	public final static String INACTIVE = "inactive";
 	
 	
 	public static String callRestService(String path, String method,
@@ -57,7 +63,7 @@ public class RestUtil {
 			String parametres = "";
 			String output;
 			String url = ParameterImpl.getInstance().getValueByName(
-					URL_WEB_SERVICE)
+					URL_WEB_SERVICE_PARAMETER)
 					+ path;
 			int i = 0;
 			if (params != null) {
