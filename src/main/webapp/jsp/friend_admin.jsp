@@ -8,7 +8,7 @@
 	<h1>Ecran d'administration des amis</h1>
  
 	Ajout d'une amitié : <a href="addCustomerPage"></a>
-	<form method="post" action="/songsend_friend_admin" >
+	<form method="post" action="/admin/friend" >
 		<table>
 			<tr>
 				<td>
@@ -86,7 +86,7 @@
 			  <td><%=e.getIdPersonApplicant()%></td>
 			  <td><%=e.getIdPerson() %></td>
 			  <td><%=e.getStatus() %></td>
-			  <td><a href="/songsend_friend_admin?action=delete&id=<%=e.getId()%>">Delete</a></td>
+			  <td><a href="/admin/friend?action=delete&id=<%=e.getId()%>">Delete</a></td>
 			</tr>
 		<%
 			}

@@ -5,7 +5,7 @@
 	<h1>Ecran d'administration des parametres :</h1>
  
 	Ajout d'utilisateur : 
-	<form method="post" action="/songsend_parameter_admin" >
+	<form method="post" action="/admin/parameter" >
 		<table>
 			<tr>
 				<td>

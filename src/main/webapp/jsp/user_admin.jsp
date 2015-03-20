@@ -8,7 +8,7 @@
 	<h1>Ecran d'administration des utilisateurs</h1>
  
 	Ajout d'utilisateur : <a href="addCustomerPage"></a>
-	<form method="post" action="/songsend_user_admin" >
+	<form method="post" action="/admin/user" >
 		<table>
 			<tr>
 				<td>
@@ -77,7 +77,7 @@
 			  <td><%=e.getPseudo() %></td>
 			  <td><%=e.getEmail() %></td>
 			  <td><a href="update/<%=e.getPseudo()%>">Update</a> 
-                             | <a href="/songsend_user_admin?action=delete&id=<%=e.getId()%>">Delete</a></td>
+                             | <a href="/admin/user?action=delete&id=<%=e.getId()%>">Delete</a></td>
 			</tr>
 		<%
 			}

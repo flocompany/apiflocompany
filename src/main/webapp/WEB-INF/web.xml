@@ -70,23 +70,23 @@
   </servlet-mapping>
   <servlet-mapping>
 	<servlet-name>Songsend_user_admin</servlet-name>
-	<url-pattern>/songsend_user_admin</url-pattern>
+	<url-pattern>/admin/user</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
 	<servlet-name>Songsend_friend_admin</servlet-name>
-	<url-pattern>/songsend_friend_admin</url-pattern>
+	<url-pattern>/admin/friend</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
 	<servlet-name>Songsend_parameter_admin</servlet-name>
-	<url-pattern>/songsend_parameter_admin</url-pattern>
+	<url-pattern>/admin/parameter</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
 	<servlet-name>Songsend_song_admin</servlet-name>
-	<url-pattern>/songsend_song_admin</url-pattern>
+	<url-pattern>/admin/song</url-pattern>
   </servlet-mapping>  
   <servlet-mapping>
 	<servlet-name>Songsend_song</servlet-name>
-	<url-pattern>/songsend_song</url-pattern>
+	<url-pattern>/song</url-pattern>
   </servlet-mapping>  
   
 
@@ -100,21 +100,12 @@
 	
 	<security-constraint>
 	    <web-resource-collection>
-	    	<web-resource-name>songsend_user_admin</web-resource-name>
-	     	<url-pattern>/songsend_user_admin</url-pattern>
+	    	<web-resource-name>/admin/*</web-resource-name>
+	     	<url-pattern>/admin/*</url-pattern>
 	    </web-resource-collection>
 	    <auth-constraint>
 	        <role-name>admin</role-name>
 	    </auth-constraint>
 	</security-constraint>
 	
-	<security-constraint>
-	    <web-resource-collection>
-	    	<web-resource-name>songsend_parameter_admin</web-resource-name>
-	     	<url-pattern>/songsend_parameter_admin</url-pattern>
-	    </web-resource-collection>
-	    <auth-constraint>
-	        <role-name>admin</role-name>
-	    </auth-constraint>
-	</security-constraint>
 </web-app>

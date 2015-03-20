@@ -14,7 +14,7 @@
 	<h1>Ecran d'administration des parametres :</h1>
  
 	Ajout d'utilisateur : 
-	<form method="post" action="<%= blobstoreService.createUploadUrl("/songsend_song_admin") %>" enctype="multipart/form-data">
+	<form method="post" action="<%= blobstoreService.createUploadUrl("/admin/song") %>" enctype="multipart/form-data">
 		<table>
 			<tr>
 				<td>
@@ -129,7 +129,7 @@
 			  <td><%=s.getStatus() %></td>
 			  <td><%=s.getMp3Key() %></td>
 			  <td><%=s.getOggKey() %></td>
-			  <td><a href="/songsend_song_admin?action=delete&id=<%=s.getId()%>">Delete</a></td>
+			  <td><a href="/admin/song?action=delete&id=<%=s.getId()%>">Delete</a></td>
 			</tr>
 		<%
 		}
