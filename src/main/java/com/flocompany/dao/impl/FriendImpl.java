@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flocompany.dao.model.Friend;
+import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.FriendDTO;
+import com.flocompany.rest.model.PersonDTO;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -136,6 +138,15 @@ public class FriendImpl {
 		return results;
 	}
 	
+	
+	public FriendDTO findById(String id){
+		FriendDTO result = null;
+		Friend p = ofy().cache(false).load().key(Key.create(Key.create(Friend.class, "Friends"), Friend.class, Long.valueOf(id))).now();
+		if(p !=null){
+			result = p.toDto();
+		}
+		return result;
+	}
 	
 	
 	/** delete the User entity by his Id
