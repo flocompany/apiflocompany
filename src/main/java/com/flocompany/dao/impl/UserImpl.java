@@ -147,6 +147,33 @@ public class UserImpl {
 		return result;
 	}
 	
+	
+	public PersonDTO findRandomById(String id, List<Long> friendListTosubscrire){
+		PersonDTO result = null;
+		List<PersonDTO> persons = findAllUsers();
+		List<PersonDTO> personsWithoutFriend = new ArrayList<PersonDTO>();
+		System.out.println("********* friendListTosubscrire.size()" + friendListTosubscrire.size());
+		System.out.println("********* persons.size()" + persons.size());
+		if(friendListTosubscrire.size()>0){
+			for(PersonDTO p : persons){
+				if(!friendListTosubscrire.contains(p.getId())){
+					personsWithoutFriend.add(p);
+				}
+			}
+		}else{
+			personsWithoutFriend=persons;
+		}
+
+		System.out.println("********* personsWithoutFriend.size()" + personsWithoutFriend.size());
+		int index = 0;
+		if(personsWithoutFriend.size()>0){
+			Double random = Math.random() * ( personsWithoutFriend.size() - 0 );
+			result = personsWithoutFriend.get(random.intValue());
+		}
+		
+		return result;
+	}
+	
 	/** Get Users by ids
 	 * @return
 	 */

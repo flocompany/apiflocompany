@@ -111,4 +111,44 @@ public class FriendResource extends AbstractResource{
 		return newFriend;
     }
     
+    
+    /** Rest Service witch allow to register a new User in the application
+     * @param personParams
+     * @return
+     */
+    @POST
+    @Path("addrandom")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public PersonDTO addRandom(MultivaluedMap<String, String> friendParams) {
+		String idApplicant = friendParams.getFirst(ID_APPLICANT);
+		PersonDTO newFriend = null;
+		if (isEmpty(idApplicant)
+				|| isBlank(idApplicant) ) {
+			throw new BadRequestException(
+					"Missing parameters");
+		}
+
+
+		PersonDTO personApplicant = UserImpl.getInstance().findById(idApplicant);
+		if (personApplicant == null) {
+			throw new BadRequestException(
+					"Applicant parameter do not exist");
+		}
+		
+		
+		//get all friends
+		List<Long> myFriendsId = FriendImpl.getInstance().findFriendByPerson(idApplicant);
+		myFriendsId.add(personApplicant.getId());
+		//get random person not in existing friends
+		PersonDTO result = UserImpl.getInstance().findRandomById(idApplicant, myFriendsId);
+		
+		if (result==null){
+			throw new ResourceNotFindException("No random friend find.");
+		}else{
+			FriendImpl.getInstance().addFriend(idApplicant, String.valueOf(result.getId()));
+		}
+		return result;
+    }
+    
 }

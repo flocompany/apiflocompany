@@ -65,6 +65,9 @@ public class FriendImpl {
 		return result;
 	}
 	
+	
+
+	
 	/** Update the value of a Friend Entity
 	 * @param name
 	 * @param value
