@@ -1,4 +1,4 @@
-<%@ page import="java.util.List" %>
+﻿<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.SongDTO" %>
 <%@ page import="com.flocompany.util.EnumCategorySong" %>
 <%@ page import="com.google.appengine.api.blobstore.*" %>
@@ -88,7 +88,7 @@
 			</tr>				
 		</table>
 		<select name="action">
-			  <option value="upload">Cr�er</option>
+			  <option value="upload">Créer</option>
 			  <option value="update">update</option>
 			  <option value="other">other</option>
 		</select> 

@@ -29,6 +29,9 @@ public class SongAdminServlet extends AbstractServlet {
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("ISO-8859-1");
 
+		
+		System.out.println(" *************************req.getParameter();" + req.getParameter("title"));
+        	
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 		String action = req.getParameter("action");
 		if(action!=null){
@@ -49,13 +52,19 @@ public class SongAdminServlet extends AbstractServlet {
 		        	oggKey = blobKeysOgg.get(0).getKeyString();
 		        }
 		        
+		        
+		        
 			        String category = req.getParameter("category");
 			        String title = req.getParameter("title");
 			        String extract = req.getParameter("extract");
 			        String description = req.getParameter("description");
 			        String status = req.getParameter("status");
 			        
-
+			        
+			        System.out.println(" *************************req.getParameter();" + req.getParameter("title"));
+			        System.out.println(" *************************new string;" + new String (title.getBytes ("iso-8859-1"), "UTF-8"));
+			        
+			        
 			    if(StringUtil.isNotEmpty(mp3Key)&&StringUtil.isNotEmpty(oggKey)&&StringUtil.isNotEmpty(title)&&StringUtil.isNotEmpty(extract)){
 			        SongImpl.getInstance().addSong(mp3Key, oggKey, category, title, extract, description);
 			        req.setAttribute("result", "L'upload des fichiers a été réalisé avec succés.");
@@ -100,8 +109,8 @@ public class SongAdminServlet extends AbstractServlet {
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("text/html");
-		resp.setCharacterEncoding("UTF-8");
-		req.setCharacterEncoding("UTF-8");
+		resp.setCharacterEncoding("ISO-8859-1");
+		req.setCharacterEncoding("ISO-8859-1");
 		this.doGet(req, resp);
 	}
 	

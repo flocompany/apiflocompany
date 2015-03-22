@@ -1,8 +1,8 @@
-<%@ page import="java.util.List" %>
+﻿<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.PersonDTO" %>
 <html>
    <head>
-        <meta charset="utf-8" />
+   		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    </head>
 <body>
 	<h1>Ecran d'administration des utilisateurs</h1>
