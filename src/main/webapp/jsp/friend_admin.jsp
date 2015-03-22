@@ -7,7 +7,7 @@
 <body>
 	<h1>Ecran d'administration des amis</h1>
  
-	Ajout d'une amitié : <a href="addCustomerPage"></a>
+	Ajout d'une amitiÃ© : <a href="addCustomerPage"></a>
 	<form method="post" action="/admin/friend" >
 		<table>
 			<tr>
@@ -71,7 +71,7 @@
 				<td>Id</td>
 				<td>Id du demandeur</td>
 				<td>Id de receveur</td>
-				<td>Status de l'amitié</td>
+				<td>Status de l'amitiÃ©</td>
 				<td>Action</td>
 			</tr>
 		</thead>

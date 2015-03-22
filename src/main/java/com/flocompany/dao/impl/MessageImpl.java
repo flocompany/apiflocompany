@@ -88,6 +88,23 @@ public class MessageImpl {
 	
 	
 	
+	/** Get all Messages
+	 * @param friend
+	 * @return
+	 */
+	public List<MessageDTO> findAllMessagesByFriend(String idFriend){
+		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
+		System.out.println(friend.getString());
+		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).list();
+		System.out.println("sise" + messages.size());
+		List<MessageDTO> results = new ArrayList<MessageDTO>();
+		for(Message m : messages){
+			results.add(m.toDto());
+		}
+		
+		return results;
+	}
+	
 	/** delete the Message entity by his Id
 	 * @param id
 	 * @return

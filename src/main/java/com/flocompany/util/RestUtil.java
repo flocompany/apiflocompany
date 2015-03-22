@@ -49,6 +49,12 @@ public class RestUtil {
 	public final static String ID_SONG = "id";
 	public final static String CATEGORY_CODE = "category_code";
 	
+	
+	//Resource parameter of Song
+	public final static String ID_MESSAGE = "id";
+	public final static String ID_FRIEND_MESSAGE = "id_friend";
+	
+	
 	//Song status
 	public final static String PREMIUM = "premium";
 	public final static String FREE = "free";
