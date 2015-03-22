@@ -1,7 +1,8 @@
 package com.flocompany.rest.resource;
 
 import static com.flocompany.util.RestUtil.ID_FRIEND_MESSAGE;
-import static com.flocompany.util.RestUtil.PSEUDO;
+import static com.flocompany.util.RestUtil.ID_SONG_MESSAGE;
+import static com.flocompany.util.RestUtil.ID_SENDER;
 import static com.flocompany.util.StringUtil.isBlank;
 import static com.flocompany.util.StringUtil.isEmpty;
 import static com.flocompany.util.StringUtil.isNotEmpty;
@@ -27,6 +28,7 @@ import com.flocompany.dao.impl.ParameterImpl;
 import com.flocompany.dao.impl.SongImpl;
 import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.exception.BadRequestException;
+import com.flocompany.rest.exception.NotAcceptableException;
 import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.CategoryDTO;
@@ -67,6 +69,10 @@ public class MessageResource extends AbstractResource{
          
     
     
+    /** Get the lis of the friend messages
+     * @param idFriend
+     * @return
+     */
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
@@ -75,6 +81,35 @@ public class MessageResource extends AbstractResource{
     	System.out.println("idFriend" + idFriend);
     	List<MessageDTO> messages = MessageImpl.getInstance().findAllMessagesByFriend(idFriend);
         return messages;
+    }
+    
+    
+    
+    /** Rest Service witch add a message
+     * @param messageParams
+     * @return
+     */
+    @POST
+    @Path("add")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public long add(
+            MultivaluedMap<String, String> messageParams
+            ) {
+			String idFriend = messageParams.getFirst(ID_FRIEND_MESSAGE);
+			String idSender = messageParams.getFirst(ID_FRIEND_MESSAGE);
+			String idSong = messageParams.getFirst(ID_SENDER);
+
+			if (isEmpty(idFriend) || isEmpty(idSender) || isEmpty(idSong) || isBlank(idFriend)	|| isBlank(idSender)	|| isBlank(idSong)) {
+				throw new NotAcceptableException(
+						"Parameter is missing.");
+			}
+			
+			long result = MessageImpl.getInstance().addMessage(idSender, idSong, idFriend);
+
+//			testPrivilege(String.valueOf(person.getId()), person.getPwd());
+
+        return result;   
     }
     
     

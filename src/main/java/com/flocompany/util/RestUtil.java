@@ -53,6 +53,8 @@ public class RestUtil {
 	//Resource parameter of Song
 	public final static String ID_MESSAGE = "id";
 	public final static String ID_FRIEND_MESSAGE = "id_friend";
+	public final static String ID_SENDER = "id_sender";
+	public final static String ID_SONG_MESSAGE = "id_song_message";
 	
 	
 	//Song status

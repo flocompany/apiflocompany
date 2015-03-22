@@ -96,7 +96,6 @@ public class MessageImpl {
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
 		System.out.println(friend.getString());
 		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).list();
-		System.out.println("sise" + messages.size());
 		List<MessageDTO> results = new ArrayList<MessageDTO>();
 		for(Message m : messages){
 			results.add(m.toDto());
@@ -110,13 +109,8 @@ public class MessageImpl {
 	 * @return
 	 */
 	public boolean deleteMessage(long id, long idFriend){
-		
 		Key<Friend> keyFriend = Key.create(Friend.class, idFriend);
 		Key<Message> key = Key.create(keyFriend, Message.class, id);
-
-		System.out.println("********** id" + id);
-		System.out.println("********** key" + key.getString());
-		System.out.println("********** keyFriend" + keyFriend.getString());
 		ofy().cache(false).delete().key(key).now();
 		return true;
 	}
