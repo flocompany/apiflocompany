@@ -1,7 +1,14 @@
 package com.flocompany.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class StringUtil {
+	
+	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM HH:mm");
+	
 	public static boolean isEmpty(String str) {
 
 		return str == null || str.length() == 0;
@@ -51,6 +58,10 @@ public class StringUtil {
 		if( email!=null && email.trim().length()>0 )
 			return email.matches("^[a-zA-Z0-9\\.\\-\\_]+@([a-zA-Z0-9\\-\\_\\.]+\\.)+([a-zA-Z]{2,4})$");
 		return false;
+	}
+	
+	public static String formatDateMessage(Date date){
+		return dateFormat.format(date);		
 	}
 
 }

@@ -132,9 +132,14 @@ public class UserImpl {
 	 * @return
 	 */
 	public boolean deleteUser(long id){
-		Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
-		ofy().cache(false).delete().key(key).now();
-		return true;
+		boolean result =false;
+		List<Long> friendList = FriendImpl.getInstance().findFriendIdsByPerson(String.valueOf(id));
+			if(friendList.size()>0){		
+			Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
+			ofy().cache(false).delete().key(key).now();
+			result=true;
+		}
+		return result;
 	}
 	
 	
@@ -152,8 +157,6 @@ public class UserImpl {
 		PersonDTO result = null;
 		List<PersonDTO> persons = findAllUsers();
 		List<PersonDTO> personsWithoutFriend = new ArrayList<PersonDTO>();
-		System.out.println("********* friendListTosubscrire.size()" + friendListTosubscrire.size());
-		System.out.println("********* persons.size()" + persons.size());
 		if(friendListTosubscrire.size()>0){
 			for(PersonDTO p : persons){
 				if(!friendListTosubscrire.contains(p.getId())){

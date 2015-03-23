@@ -8,6 +8,8 @@ import java.util.List;
 import com.flocompany.dao.model.Friend;
 import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.FriendDTO;
+import com.flocompany.rest.model.FriendWrappedDTO;
+import com.flocompany.rest.model.MessageDTO;
 import com.flocompany.rest.model.PersonDTO;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
@@ -114,7 +116,7 @@ public class FriendImpl {
 	/** Get list of friend id of a Person
 	 * @return
 	 */
-	public List<Long> findFriendByPerson(String idPerson){
+	public List<Long> findFriendIdsByPerson(String idPerson){
 		List<Long> results = new ArrayList<Long>();
 		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
 		if (friends.size() <= 0) {
@@ -138,6 +140,48 @@ public class FriendImpl {
 		return results;
 	}
 	
+	/** Get list of friend id of a Person
+	 * @return
+	 */
+	public List<FriendWrappedDTO> findFriendWrappedDTOByIdperson(String idPerson){
+		List<FriendWrappedDTO> results = new ArrayList<FriendWrappedDTO>();
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
+		if (friends.size() <= 0) {
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			if (friends.size() > 0) {
+				for (Friend f : friends) {
+					results.add(buildFriendWrappedDTO(f, true));
+				}
+			}
+		} else {
+			for (Friend f : friends) {
+				results.add(buildFriendWrappedDTO(f, false));
+			}
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			if (friends.size() > 0) {
+				for (Friend f : friends) {
+					results.add(buildFriendWrappedDTO(f, true));
+				}
+			}
+		}
+		return results;
+	}
+	
+	private FriendWrappedDTO buildFriendWrappedDTO(Friend f, boolean applicant){
+		FriendWrappedDTO newFriendWrappedDTO = new FriendWrappedDTO(f.getId(), f.getIdPersonApplicant(), f.getIdPersonApplicant(), f.getStatus());
+		PersonDTO p = null;
+		if(applicant){
+			p = UserImpl.getInstance().findById(String.valueOf(f.getIdPersonApplicant()));
+		}else{
+			p = UserImpl.getInstance().findById(String.valueOf(f.getIdPerson()));
+		}
+		newFriendWrappedDTO.setPseudo(p.getPseudo());
+		newFriendWrappedDTO.setEmail(p.getEmail());
+		int nbMessage = MessageImpl.getInstance().countMessagesByFriend(String.valueOf(f.getId()));
+		newFriendWrappedDTO.setNbMessage(String.valueOf(nbMessage));
+		return newFriendWrappedDTO;
+	}
+	
 	
 	public FriendDTO findById(String id){
 		FriendDTO result = null;
@@ -154,6 +198,13 @@ public class FriendImpl {
 	 * @return
 	 */
 	public boolean delete(long id){
+		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(id));
+		List<MessageDTO> msgList = MessageImpl.getInstance().findAllMessagesByFriend(friend);
+		if(msgList.size()>0){
+			for(MessageDTO msg : msgList){
+				MessageImpl.getInstance().deleteMessage(msg.getId(), msg.getIdFriend());
+			}
+		}
 		Key<Friend> key = Key.create(Key.create(Key.create(Friend.class, "friends"), Friend.class, id).getString());
 		ofy().cache(false).delete().key(key).now();
 		return true;

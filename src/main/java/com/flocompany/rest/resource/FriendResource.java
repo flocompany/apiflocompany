@@ -26,6 +26,7 @@ import com.flocompany.rest.exception.BadRequestException;
 import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.FriendDTO;
+import com.flocompany.rest.model.FriendWrappedDTO;
 import com.flocompany.rest.model.PersonDTO;
 
 
@@ -59,15 +60,12 @@ public class FriendResource extends AbstractResource{
     @GET
     @Path("mylist")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<PersonDTO> myList(@QueryParam(ID) String id) {
-    	List<PersonDTO> persons =  null;
-    	List<Long> idPersons = FriendImpl.getInstance().findFriendByPerson(id);
-    	if(idPersons.size()>0){
-    		persons = UserImpl.getInstance().findUsersByIds(idPersons);
-    	}else{
+    public List<FriendWrappedDTO> myList(@QueryParam(ID) String id) {
+    	List<FriendWrappedDTO> results = FriendImpl.getInstance().findFriendWrappedDTOByIdperson(id);
+    	if(results.size()<=0){
     		throw new ResourceNotFindException("Sorry, Not friends for the moment. You must add to use application");
     	}
-        return persons;
+        return results;
     }
     
     /** Rest Service witch allow to register a new User in the application
@@ -138,7 +136,7 @@ public class FriendResource extends AbstractResource{
 		
 		
 		//get all friends
-		List<Long> myFriendsId = FriendImpl.getInstance().findFriendByPerson(idApplicant);
+		List<Long> myFriendsId = FriendImpl.getInstance().findFriendIdsByPerson(idApplicant);
 		myFriendsId.add(personApplicant.getId());
 		//get random person not in existing friends
 		PersonDTO result = UserImpl.getInstance().findRandomById(idApplicant, myFriendsId);

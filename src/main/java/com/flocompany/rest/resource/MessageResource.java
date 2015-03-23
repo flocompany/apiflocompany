@@ -33,6 +33,7 @@ import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.CategoryDTO;
 import com.flocompany.rest.model.MessageDTO;
+import com.flocompany.rest.model.MessageWrappedDTO;
 import com.flocompany.rest.model.ParameterDTO;
 import com.flocompany.rest.model.PersonDTO;
 import com.flocompany.rest.model.SongDTO;
@@ -76,10 +77,10 @@ public class MessageResource extends AbstractResource{
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<MessageDTO> list(@QueryParam(ID_FRIEND_MESSAGE) String idFriend) {
+    public List<MessageWrappedDTO> list(@QueryParam(ID_FRIEND_MESSAGE) String idFriend) {
 
     	System.out.println("idFriend" + idFriend);
-    	List<MessageDTO> messages = MessageImpl.getInstance().findAllMessagesByFriend(idFriend);
+    	List<MessageWrappedDTO> messages = MessageImpl.getInstance().findAllMessagesByFriend(idFriend);
         return messages;
     }
     
@@ -97,8 +98,8 @@ public class MessageResource extends AbstractResource{
             MultivaluedMap<String, String> messageParams
             ) {
 			String idFriend = messageParams.getFirst(ID_FRIEND_MESSAGE);
-			String idSender = messageParams.getFirst(ID_FRIEND_MESSAGE);
-			String idSong = messageParams.getFirst(ID_SENDER);
+			String idSender = messageParams.getFirst(ID_SENDER);
+			String idSong = messageParams.getFirst(ID_SONG_MESSAGE);
 
 			if (isEmpty(idFriend) || isEmpty(idSender) || isEmpty(idSong) || isBlank(idFriend)	|| isBlank(idSender)	|| isBlank(idSong)) {
 				throw new NotAcceptableException(

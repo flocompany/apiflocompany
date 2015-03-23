@@ -11,7 +11,9 @@ import com.flocompany.dao.model.Message;
 import com.flocompany.dao.model.Person;
 import com.flocompany.dao.model.Song;
 import com.flocompany.rest.model.MessageDTO;
+import com.flocompany.rest.model.MessageWrappedDTO;
 import com.flocompany.rest.model.SongDTO;
+import com.flocompany.util.StringUtil;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -92,13 +94,30 @@ public class MessageImpl {
 	 * @param friend
 	 * @return
 	 */
-	public List<MessageDTO> findAllMessagesByFriend(String idFriend){
+	public int countMessagesByFriend(String idFriend){
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
 		System.out.println(friend.getString());
 		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).list();
-		List<MessageDTO> results = new ArrayList<MessageDTO>();
+		int results = messages.size();
+		return results;
+	}
+	
+	
+	/** Get all Messages
+	 * @param friend
+	 * @return
+	 */
+	public List<MessageWrappedDTO> findAllMessagesByFriend(String idFriend){
+		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
+		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).order("dateMessage").list();
+		List<MessageWrappedDTO> results = new ArrayList<MessageWrappedDTO>();
 		for(Message m : messages){
-			results.add(m.toDto());
+			String dateMessage=StringUtil.formatDateMessage(m.getDateMessage());
+			MessageWrappedDTO newMessageWrappedDTO = new MessageWrappedDTO(m.getId(), m.getIdSender(), m.getIdSong(), m.getMessage(), dateMessage, m.getRead(), Long.valueOf(idFriend));
+			SongDTO s = SongImpl.getInstance().findById(m.getIdSong());		
+			newMessageWrappedDTO.setMp3Key(s.getMp3Key());
+			newMessageWrappedDTO.setOggKey(s.getOggKey());
+			results.add(newMessageWrappedDTO);
 		}
 		
 		return results;

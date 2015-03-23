@@ -82,7 +82,7 @@ public class Message {
 		this.dateMessage = dateMessage;
 	}
 
-	public boolean isRead() {
+	public boolean getRead() {
 		return read;
 	}
 
@@ -93,7 +93,17 @@ public class Message {
 	
 	
 
-     public MessageDTO toDto(){
+     public Key<Friend> getParent() {
+		return parent;
+	}
+
+
+	public void setParent(Key<Friend> parent) {
+		this.parent = parent;
+	}
+
+
+	public MessageDTO toDto(){
     	 MessageDTO m = new MessageDTO(idSender, idSong, message, dateMessage, read, parent.getId());
     	 m.setId(this.id);
     	 return m;

@@ -82,9 +82,6 @@ public class PersonResource extends AbstractResource{
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public PersonDTO findPerson(@QueryParam(PSEUDO) String pseudo) {
     	
-//    	Response.ok().header("Access-Control-Allow-Origin", "*")
-//		.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
-//		.allow("OPTIONS").build();
     	
     	PersonDTO  person = UserImpl.getInstance().findUserByPseudo(pseudo);
     	if(person==null){
@@ -116,16 +113,23 @@ public class PersonResource extends AbstractResource{
 		String mail = personParams.getFirst(MAIL);
 		String pwd = personParams.getFirst(PWD);
 
-    	System.out.println("AZZZ****************" + pseudo + mail + pwd);
 		if (isEmpty(pseudo) || isEmpty(mail) || isEmpty(pwd)
 				|| isBlank(pseudo) || isBlank(mail) || isBlank(pwd)) {
-			System.out.println("111111");
 			throw new NotAcceptableException(
 					"Sorry, all fiels must be enter");
 		}
+		
+		if(pseudo.length()>10){
+			throw new NotAcceptableException(
+					"Sorry, Nickname is limited to 10 characters.");
+		}
+		
+		if(pwd.length()<6){
+			throw new NotAcceptableException(
+					"Sorry, password must be on 6 characters minimum");
+		}
 
 		if (!isValidMail(mail)) {
-			System.out.println("222222");
 			throw new NotAcceptableException(
 					"Sorry, it is not a valid email");
 		}
@@ -133,9 +137,8 @@ public class PersonResource extends AbstractResource{
 		PersonDTO personPseudo = UserImpl.getInstance().findUserByPseudo(
 				pseudo);
 		if (personPseudo != null) {
-			System.out.println("333333");
 			throw new NotAcceptableException(
-					"Sorry, pseudo already exist!!");
+					"Sorry, nickname already exist!!");
 		}
 		
 		PersonDTO personMail = UserImpl.getInstance().findUserByEmail(mail);
