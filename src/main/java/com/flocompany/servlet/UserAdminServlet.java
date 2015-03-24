@@ -78,7 +78,7 @@ public class UserAdminServlet extends AbstractServlet {
 					for(DeviceDTO d : devices){
 						restResult+=d.getIdRegDevice();
 						MessageAEnvoyerDTO m = new MessageAEnvoyerDTO("-1", "Notification SongSend", "Ceci est juste un test", "no date");
-//						NotificationUtil.sendNotification(d.getIdRegDevice(), m);
+						NotificationUtil.sendNotification(d.getIdRegDevice(), m);
 					}
 				}
 				req.setAttribute("restResult", restResult);
