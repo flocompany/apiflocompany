@@ -27,6 +27,8 @@ public class RestUtil {
 	public final static String PSEUDO = "pseudo";
 	public final static String MAIL = "mail";
 	public final static String PWD = "pwd";
+	public final static String ID_DEVICE = "id_device";
+	public final static String TYPE_DEVICE = "type";
 	
 	//Resource parameter of Friend
 	public final static String ID_FRIEND = "id_friend";
@@ -61,6 +63,10 @@ public class RestUtil {
 	public final static String PREMIUM = "premium";
 	public final static String FREE = "free";
 	public final static String INACTIVE = "inactive";
+	
+	
+	//API KEY SERVEUR
+	public final static String GCM_KEY_SERVER = "AIzaSyDSNPrNzGlwgS0PQQGXq7NKUH6MM9tqlnU";
 	
 	
 	public static String callRestService(String path, String method,

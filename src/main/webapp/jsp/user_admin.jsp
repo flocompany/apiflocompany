@@ -1,4 +1,4 @@
-﻿<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.PersonDTO" %>
 <html>
    <head>
@@ -36,7 +36,16 @@
 					<input type="password" style="width: 185px;" 
                                             maxlength="30" name="pwd" id="pwd" />
 				</td>
-			</tr>			
+			</tr>	
+			<tr>
+				<td>
+					device :
+				</td>
+				<td>
+					<input type="deviceId" style="width: 185px;" 
+                                            maxlength="30" name="deviceId" id="deviceId" />
+				</td>
+			</tr>						
 		</table>
 		<select name="action">
 			  <option value="signup">Signup (WS, POST)</option>
@@ -50,12 +59,10 @@
 		<input type="submit" class="save" title="Execute" value="Execute" />
 	</form>
 	
-	
-	
-	<hr />
+	<hr/>
 	Retour du webservice : </br>
 	<%=request.getAttribute("restResult") %>
-	<hr />
+	<hr/>
 	<h2>Liste des utilisateurs</h2>
 	<table border="1">
 		<thead>
@@ -76,7 +83,7 @@
 			<td><%=e.getId()%></td>
 			  <td><%=e.getPseudo() %></td>
 			  <td><%=e.getEmail() %></td>
-			  <td><a href="update/<%=e.getPseudo()%>">Update</a> 
+			  <td><a href="/admin/user?action=notify&id=<%=e.getId()%>">notifier</a> 
                              | <a href="/admin/user?action=delete&id=<%=e.getId()%>">Delete</a></td>
 			</tr>
 		<%

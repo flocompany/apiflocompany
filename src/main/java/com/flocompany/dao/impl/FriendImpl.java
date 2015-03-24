@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flocompany.dao.model.Friend;
-import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.FriendDTO;
 import com.flocompany.rest.model.FriendWrappedDTO;
 import com.flocompany.rest.model.MessageDTO;

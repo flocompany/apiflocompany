@@ -3,16 +3,16 @@ package com.flocompany.dao.impl;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import com.flocompany.dao.model.Friend;
+import com.flocompany.dao.model.Device;
 import com.flocompany.dao.model.Person;
+import com.flocompany.rest.model.DeviceDTO;
 import com.flocompany.rest.model.PersonDTO;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
+import com.googlecode.objectify.Work;
 /**
  * Persist operation on the Person Entity
  * @author FC07315S
@@ -21,7 +21,35 @@ import com.googlecode.objectify.ObjectifyService;
 public class UserImpl {
 	static {
         ObjectifyService.register(Person.class);
+        ObjectifyService.register(Device.class);
     }
+	
+	
+	public class PersonWork<PersonDTO> implements Work {
+		
+		private Person person;
+		private Device device;
+		
+		public PersonWork(Person person, Device device) {
+			super();
+			this.person = person;
+			this.device = device;
+		}
+
+		@Override
+		public Object run() {
+			
+			Key<Person> keyPerson = ofy().save().entity(this.person).now(); 
+			Person newPerson = ofy().load().key(keyPerson).now();
+			Key<Person> key = Key.create(Person.class, (newPerson.getId()));
+			System.out.println("aaaaa" + keyPerson.toString());
+			Device d = new Device(device.getIdRegDevice(), device.getType(), key);
+			ofy().save().entity(d).now(); 
+			
+	        return (PersonDTO) newPerson.toDto();
+		}
+		
+	}
 	
 	/** Constructeur privé */
 	private UserImpl()
@@ -84,6 +112,25 @@ public class UserImpl {
 		return newPerson.toDto();
 	}
 	
+	/** Add a new Person Entity with his device
+	 * @param person
+	 * @param idRegDevice
+	 * @param type
+	 * @return
+	 */
+	public PersonDTO addUser(PersonDTO person, String idRegDevice, String type){
+		Person p = new Person();
+		p.initFromDTO(person);
+		Device d= new Device(idRegDevice, type, null);
+		
+		PersonWork<PersonDTO> pw = new PersonWork<>(p,d);
+		
+		PersonDTO result = (PersonDTO) ofy().transact(pw);
+    	
+		return result;
+	}
+	
+	
 	
 	
 	/** Get all Users
@@ -123,7 +170,6 @@ public class UserImpl {
 		if (user!=null){
 			result=user.toDto();
 		}
-		
 		return result;
 	}
 	
@@ -134,7 +180,7 @@ public class UserImpl {
 	public boolean deleteUser(long id){
 		boolean result =false;
 		List<Long> friendList = FriendImpl.getInstance().findFriendIdsByPerson(String.valueOf(id));
-			if(friendList.size()>0){		
+		if(friendList.size()<=0){		
 			Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
 			ofy().cache(false).delete().key(key).now();
 			result=true;
@@ -142,6 +188,21 @@ public class UserImpl {
 		return result;
 	}
 	
+	
+	/** Get the person device list
+	 * @param name
+	 * @return
+	 */
+	public List<DeviceDTO> findDeviceByPerson(String idPerson){
+		Key<Person> person = Key.create(Person.class, (Long.valueOf(idPerson)));
+		List<Device> devices = ofy().cache(false).load().type(Device.class).ancestor(person).list();
+		List<DeviceDTO> results = new ArrayList<DeviceDTO>();
+		for(Device d : devices){
+			results.add(d.toDto());
+		}
+		
+		return results;
+	}
 	
 	public PersonDTO findById(String id){
 		PersonDTO result = null;
@@ -167,7 +228,6 @@ public class UserImpl {
 			personsWithoutFriend=persons;
 		}
 
-		System.out.println("********* personsWithoutFriend.size()" + personsWithoutFriend.size());
 		int index = 0;
 		if(personsWithoutFriend.size()>0){
 			Double random = Math.random() * ( personsWithoutFriend.size() - 0 );
@@ -181,7 +241,6 @@ public class UserImpl {
 	 * @return
 	 */
 	public List<PersonDTO> findUsersByIds(List<Long> idPersons){
-
 		List<PersonDTO> results = new ArrayList<PersonDTO>();
 		List<Key<Person>> keys = new ArrayList<Key<Person>>();
 		for(Long id : idPersons){
@@ -196,6 +255,31 @@ public class UserImpl {
 		}
 		
 		return results;
+	}
+	
+	/**Add Device
+	 * @param idperson
+	 * @return
+	 */
+	public long addDevice(String idperson, String idDevice, String type){
+		Key<Person> person = Key.create(Person.class, Long.valueOf(idperson));
+		Device d = new Device(idDevice, type, person);
+		Key<Device> key = ofy().save().entity(d).now(); 
+		return key.getId();
+	}
+	
+	/**delete Device
+	 * @param idperson
+	 * @return
+	 */
+	public boolean deleteDevice(String idPerson, String idDevice){
+		Key<Person> person = Key.create(Person.class, Long.valueOf(idPerson));
+		List<Device> devices = ofy().cache(false).load().type(Device.class).ancestor(person).filter("idRegDevice", idDevice).list();
+		for(Device d : devices){
+			Key<Device> key = Key.create(person, Device.class, d.getId());
+			ofy().cache(false).delete().key(key).now();
+		}
+		return true;
 	}
 	
 }
