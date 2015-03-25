@@ -15,5 +15,4 @@ public abstract class AbstractResource {
 		}
 		throw new NotAcceptableException("Sorry, you are not logged to the application.");
 	}
-	
 }

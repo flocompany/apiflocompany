@@ -1,5 +1,5 @@
 <%@ page import="java.util.List" %>
-<%@ page import="com.flocompany.rest.model.PersonDTO" %>
+<%@ page import="com.flocompany.rest.model.PersonWrappedDTO" %>
 <html>
    <head>
    		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -70,21 +70,23 @@
 				<td>Id</td>
 				<td>Pseudo</td>
 				<td>Email</td>
+				<td>devices</td>
 				<td>Action</td>
 			</tr>
 		</thead>
 		<%
  
-		    List<PersonDTO> users = (List<PersonDTO>)request.getAttribute("userList");
-		    for(PersonDTO e : users){
+		    List<PersonWrappedDTO> users = (List<PersonWrappedDTO>)request.getAttribute("userList");
+		    for(PersonWrappedDTO u : users){
  
 		%>
 			<tr>
-			<td><%=e.getId()%></td>
-			  <td><%=e.getPseudo() %></td>
-			  <td><%=e.getEmail() %></td>
-			  <td><a href="/admin/user?action=notify&id=<%=e.getId()%>">notifier</a> 
-                             | <a href="/admin/user?action=delete&id=<%=e.getId()%>">Delete</a></td>
+			<td><%=u.getId()%></td>
+			  <td><%=u.getPseudo() %></td>
+			  <td><%=u.getEmail() %></td>
+			  <td><%=u.getDevices() %></td>
+			  <td><a href="/admin/user?action=notify&id=<%=u.getId()%>">notifier</a> 
+                             | <a href="/admin/user?action=delete&id=<%=u.getId()%>">Delete</a></td>
 			</tr>
 		<%
 			}

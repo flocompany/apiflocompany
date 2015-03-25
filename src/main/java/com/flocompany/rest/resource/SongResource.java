@@ -38,7 +38,7 @@ import com.flocompany.util.StringUtil;
 
 
 /** Rest service for the Person resource
- * @author FC07315S
+ * @author FCOU
  *
  */
 @Path("/song")

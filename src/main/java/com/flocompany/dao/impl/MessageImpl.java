@@ -10,16 +10,18 @@ import com.flocompany.dao.model.Friend;
 import com.flocompany.dao.model.Message;
 import com.flocompany.dao.model.Person;
 import com.flocompany.dao.model.Song;
+import com.flocompany.rest.model.MessageAEnvoyerDTO;
 import com.flocompany.rest.model.MessageDTO;
 import com.flocompany.rest.model.MessageWrappedDTO;
 import com.flocompany.rest.model.SongDTO;
+import com.flocompany.util.RestUtil;
 import com.flocompany.util.StringUtil;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
 
-/** Persist operation on the Person Entity
- * @author FC07315S
+/** Persist operation on the Message Entity
+ * @author FCOUCOU
  *
  */
 public class MessageImpl {
@@ -53,10 +55,14 @@ public class MessageImpl {
 	 * @return
 	 */
 	public long addMessage(String idSender, String idSong, String idFriend){
+		long result = -1;
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
 		Message m = new Message(idSender, idSong, "", new Date(), false, friend);
 		Key<Message> key = ofy().save().entity(m).now(); 
-		return key.getId();
+		if(key!=null){
+			result=key.getId();
+		}
+		return result;
 	}
 	
 	/** Get all Messages

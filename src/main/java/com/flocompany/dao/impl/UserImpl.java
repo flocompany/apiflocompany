@@ -2,20 +2,25 @@ package com.flocompany.dao.impl;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.flocompany.dao.model.Device;
 import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.DeviceDTO;
 import com.flocompany.rest.model.PersonDTO;
+import com.flocompany.rest.model.PersonWrappedDTO;
+import com.flocompany.util.SecurityUtil;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 import com.googlecode.objectify.Work;
 /**
  * Persist operation on the Person Entity
- * @author FC07315S
+ * @author FCOU
  *
  */
 public class UserImpl {
@@ -25,6 +30,11 @@ public class UserImpl {
     }
 	
 	
+	/** Transaction class for add user with devices
+	 * @author FCOU
+	 *
+	 * @param <PersonDTO>
+	 */
 	public class PersonWork<PersonDTO> implements Work {
 		
 		private Person person;
@@ -42,7 +52,6 @@ public class UserImpl {
 			Key<Person> keyPerson = ofy().save().entity(this.person).now(); 
 			Person newPerson = ofy().load().key(keyPerson).now();
 			Key<Person> key = Key.create(Person.class, (newPerson.getId()));
-			System.out.println("aaaaa" + keyPerson.toString());
 			Device d = new Device(device.getIdRegDevice(), device.getType(), key);
 			ofy().save().entity(d).now(); 
 			
@@ -69,10 +78,16 @@ public class UserImpl {
 	 * @param pwd
 	 */
 	public void init(){
-		initUser("titteuf", "titteuf@gmail.com", "AZERTY1");
-		initUser("tazman", "tazman@voila.fr", "123356");
-		initUser("titi", "titi@yahoo.fr", "Defebbdf");
-		initUser("tata32", "tata32@voila.fr", "dsgbtrhrtf");
+		String pwd = "";
+		try {
+			pwd = SecurityUtil.hash256("toto");
+			initUser("titteuf", "titteuf@gmail.com", pwd);
+			initUser("tazman", "tazman@voila.fr", pwd);
+			initUser("titi", "titi@yahoo.fr", pwd);
+			initUser("tata32", "tata32@voila.fr", pwd);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -112,13 +127,13 @@ public class UserImpl {
 		return newPerson.toDto();
 	}
 	
-	/** Add a new Person Entity with his device
+	/** Add a new Person Entity with device
 	 * @param person
 	 * @param idRegDevice
 	 * @param type
 	 * @return
 	 */
-	public PersonDTO addUser(PersonDTO person, String idRegDevice, String type){
+	public PersonDTO addUserWithDevice(PersonDTO person, String idRegDevice, String type){
 		Person p = new Person();
 		p.initFromDTO(person);
 		Device d= new Device(idRegDevice, type, null);
@@ -141,6 +156,24 @@ public class UserImpl {
 		List<PersonDTO> results = new ArrayList<PersonDTO>();
 		for(Person p : users){
 			results.add(p.toDto());
+		}
+		
+		return results;
+	}
+	
+	/** Get all Users with devices
+	 * @return
+	 */
+	public List<PersonWrappedDTO> findAllUsersWithDevices(){
+		List<Person> users = ofy().cache(false).load().type(Person.class).ancestor(Key.create(Person.class, "Persons")).list();
+		List<PersonWrappedDTO> results = new ArrayList<PersonWrappedDTO>();
+		for(Person p : users){
+			List<String> listRegId = new ArrayList<String>();
+			for(DeviceDTO d : findDeviceByPerson(String.valueOf(p.getId()))){
+				listRegId.add(d.getIdRegDevice());
+			}
+			PersonWrappedDTO dto = new PersonWrappedDTO(p.getId(), p.getFirstName(), p.getLastName(), p.getEmail(), p.getPseudo(), StringUtils.join(listRegId, ", "));
+			results.add(dto);
 		}
 		
 		return results;
@@ -181,9 +214,11 @@ public class UserImpl {
 		boolean result =false;
 		List<Long> friendList = FriendImpl.getInstance().findFriendIdsByPerson(String.valueOf(id));
 		if(friendList.size()<=0){		
-			Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
-			ofy().cache(false).delete().key(key).now();
-			result=true;
+			if(deleteDevices(String.valueOf(id))){
+				Key<Person> key = Key.create(Key.create(Key.create(Person.class, "Persons"), Person.class, id).getString());
+				ofy().cache(false).delete().key(key).now();
+				result=true;
+			}
 		}
 		return result;
 	}
@@ -203,7 +238,11 @@ public class UserImpl {
 		
 		return results;
 	}
-	
+	 
+	/** Get person by his id
+	 * @param id
+	 * @return
+	 */
 	public PersonDTO findById(String id){
 		PersonDTO result = null;
 		Person p = ofy().cache(false).load().key(Key.create(Key.create(Person.class, "Persons"), Person.class, Long.valueOf(id))).now();
@@ -214,6 +253,12 @@ public class UserImpl {
 	}
 	
 	
+	
+	/** Get a random person with not in his friend yet
+	 * @param id
+	 * @param friendListTosubscrire
+	 * @return
+	 */
 	public PersonDTO findRandomById(String id, List<Long> friendListTosubscrire){
 		PersonDTO result = null;
 		List<PersonDTO> persons = findAllUsers();
@@ -257,7 +302,7 @@ public class UserImpl {
 		return results;
 	}
 	
-	/**Add Device
+	/**Add Device to a person
 	 * @param idperson
 	 * @return
 	 */
@@ -268,7 +313,21 @@ public class UserImpl {
 		return key.getId();
 	}
 	
-	/**delete Device
+	/**delete all Devices of a person
+	 * @param idperson
+	 * @return
+	 */
+	public boolean deleteDevices(String idPerson){
+		Key<Person> person = Key.create(Person.class, Long.valueOf(idPerson));
+		List<Device> devices = ofy().cache(false).load().type(Device.class).ancestor(person).list();
+		for(Device d : devices){
+			Key<Device> key = Key.create(person, Device.class, d.getId());
+			ofy().cache(false).delete().key(key).now();
+		}
+		return true;
+	}
+	
+	/**delete the Device
 	 * @param idperson
 	 * @return
 	 */

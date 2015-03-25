@@ -13,6 +13,8 @@ import com.flocompany.dao.impl.ParameterImpl;
 
 public class RestUtil {
 	
+	//Global variavle
+	public final static String MODE = "dev";
 	
 	// PATH of the different rest service
 	public final static String PATH_SIGNUP = "person/signup";

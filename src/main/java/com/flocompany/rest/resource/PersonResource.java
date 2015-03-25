@@ -6,6 +6,7 @@ import static com.flocompany.util.StringUtil.isEmpty;
 import static com.flocompany.util.StringUtil.isValidMail;
 
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +28,15 @@ import com.flocompany.dao.impl.ParameterImpl;
 import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.exception.NotAcceptableException;
 import com.flocompany.rest.exception.ResourceNotFindException;
+import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.PersonDTO;
 import com.flocompany.util.MailUtil;
+import com.flocompany.util.RestUtil;
+import com.flocompany.util.SecurityUtil;
 
 
 /** Rest service for the Person resource
- * @author FC07315S
+ * @author FCOU
  *
  */
 @Path("/person")
@@ -143,36 +147,41 @@ public class PersonResource extends AbstractResource{
 		
 		PersonDTO personMail = UserImpl.getInstance().findUserByEmail(mail);
 		if (personMail != null) {
-			System.out.println("44444");
 			throw new NotAcceptableException("Sorry, email already exist!!");
 		}
 
 		person.setPseudo(pseudo);
 		person.setEmail(mail);
-		person.setPwd(pwd);
-
-		person = UserImpl.getInstance().addUser(person, idDevice, type);
-
-		// Send mail
-		List<String> mailTo = new ArrayList<String>();
-		mailTo.add(mail);
 		try {
-			MailUtil mailToSend = new MailUtil(
-					mailTo,
-					null,
-					null,
-					ParameterImpl.getInstance().getValueByName(MAIL_PARAMETER),
-					"WELCOME TO SONGSEND",
-					"Hello "
-							+ person.getPseudo()
-							+ " !!, We confirm your new account in the application. Best regards.");
-			mailToSend.envoieMails();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (NamingException e) {
-			e.printStackTrace();
+			person.setPwd(SecurityUtil.hash256(pwd));
+		} catch (NoSuchAlgorithmException e1) {
+			throw new TechnicalException("Sorry, Internal error as occured you can re try.");
+		}
+
+		person = UserImpl.getInstance().addUserWithDevice(person, idDevice, type);
+
+		if(!RestUtil.MODE.equals("dev")){
+			// Send mail
+			List<String> mailTo = new ArrayList<String>();
+			mailTo.add(mail);
+			try {
+				MailUtil mailToSend = new MailUtil(
+						mailTo,
+						null,
+						null,
+						ParameterImpl.getInstance().getValueByName(MAIL_PARAMETER),
+						"WELCOME TO SONGSEND",
+						"Hello "
+								+ person.getPseudo()
+								+ " !!, We confirm your new account in the application. Best regards.");
+				mailToSend.envoieMails();
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (MessagingException e) {
+				e.printStackTrace();
+			} catch (NamingException e) {
+				e.printStackTrace();
+			}
 		}
 		return person; 
     }    
@@ -201,6 +210,12 @@ public class PersonResource extends AbstractResource{
 			if (isEmpty(pseudoOrMail) || isEmpty(pwd) || isBlank(pseudoOrMail)	|| isBlank(pwd)) {
 				throw new NotAcceptableException(
 						"Sorry, all fiels must be enter.");
+			}
+			
+			try {
+				pwd=SecurityUtil.hash256(pwd);
+			} catch (NoSuchAlgorithmException e) {
+				throw new TechnicalException("Sorry, Internal error as occured you can re try.");
 			}
 			
 			person = UserImpl.getInstance().findUserByPseudo(pseudoOrMail);

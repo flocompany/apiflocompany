@@ -15,7 +15,7 @@ import com.googlecode.objectify.ObjectifyService;
 
 
 /** Persist operation on the Person Entity
- * @author FC07315S
+ * @author FCOU
  *
  */
 public class SongImpl {

@@ -15,7 +15,7 @@ import com.googlecode.objectify.ObjectifyService;
 
 
 /** Persist operation on the Friend Entity
- * @author FC07315S
+ * @author FCOU
  *
  */
 public class FriendImpl {

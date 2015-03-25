@@ -31,7 +31,7 @@ import com.flocompany.rest.model.PersonDTO;
 
 
 /** Rest service for the Person resource
- * @author FC07315S
+ * @author FCOU
  *
  */
 @Path("/friend")

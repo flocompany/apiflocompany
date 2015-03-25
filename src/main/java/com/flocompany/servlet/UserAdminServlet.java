@@ -5,6 +5,7 @@ import static com.flocompany.util.RestUtil.PSEUDO;
 import static com.flocompany.util.RestUtil.PWD;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,11 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 import com.flocompany.dao.impl.UserImpl;
+import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.DeviceDTO;
 import com.flocompany.rest.model.MessageAEnvoyerDTO;
 import com.flocompany.rest.model.PersonDTO;
+import com.flocompany.rest.model.PersonWrappedDTO;
 import com.flocompany.util.NotificationUtil;
 import com.flocompany.util.RestUtil;
+import com.flocompany.util.SecurityUtil;
 
 public class UserAdminServlet extends AbstractServlet {
 
@@ -35,6 +39,12 @@ public class UserAdminServlet extends AbstractServlet {
 				String pseudo = req.getParameter("pseudo");
 				String mail = req.getParameter("mail");
 				String pwd = req.getParameter("pwd");
+				try {
+					pwd=SecurityUtil.hash256(pwd);
+				} catch (NoSuchAlgorithmException e1) {
+					throw new TechnicalException("Sorry, Internal error as occured you can re try.");
+				}
+				
 				List<String> params = new ArrayList<String>();
 				params.add(PSEUDO + "=" + pseudo);
 				params.add(MAIL + "=" +mail);
@@ -49,6 +59,12 @@ public class UserAdminServlet extends AbstractServlet {
 			}else if(action.equals("login")){
 				String pseudo = req.getParameter("pseudo");
 				String pwd = req.getParameter("pwd");
+				
+				try {
+					pwd=SecurityUtil.hash256(pwd);
+				} catch (NoSuchAlgorithmException e1) {
+					throw new TechnicalException("Sorry, Internal error as occured you can re try.");
+				}
 				List<String> params = new ArrayList<String>();
 				params.add(PSEUDO + "=" + pseudo);
 				params.add(PWD + "=" +pwd);
@@ -61,9 +77,15 @@ public class UserAdminServlet extends AbstractServlet {
 				String pseudo = req.getParameter("pseudo");
 				String mail = req.getParameter("mail");
 				String pwd = req.getParameter("pwd");
+				
+				try {
+					pwd=SecurityUtil.hash256(pwd);
+				} catch (NoSuchAlgorithmException e1) {
+					throw new TechnicalException("Sorry, Internal error as occured you can re try.");
+				}
 				PersonDTO p = new PersonDTO(pseudo, mail, pwd);
 				String deviceId = req.getParameter("deviceId");
-				UserImpl.getInstance().addUser(p, deviceId, "");
+				UserImpl.getInstance().addUserWithDevice(p, deviceId, "");
 			}else if(action.equals("search")){
 				List<String> params = new ArrayList<String>();
 				String pseudo = req.getParameter("pseudo");
@@ -74,11 +96,19 @@ public class UserAdminServlet extends AbstractServlet {
 				String restResult = "Devices => ";
 				String id = req.getParameter("id");
 				if(id!=null){
-					List<DeviceDTO> devices = UserImpl.getInstance().findDeviceByPerson(id);
-					for(DeviceDTO d : devices){
-						restResult+=d.getIdRegDevice();
-						MessageAEnvoyerDTO m = new MessageAEnvoyerDTO("-1", "Notification SongSend", "Ceci est juste un test", "no date");
-						NotificationUtil.sendNotification(d.getIdRegDevice(), m);
+					if(!RestUtil.MODE.equals("dev")){
+						List<DeviceDTO> devices = UserImpl.getInstance().findDeviceByPerson(id);
+						List<String> deviceList = new ArrayList<String>();
+						for(DeviceDTO d : devices){
+							restResult+=d.getIdRegDevice();
+							if(!RestUtil.MODE.equals("dev")){
+								deviceList.add(d.getIdRegDevice());
+							}
+						}
+						if(deviceList.size()>0){
+							MessageAEnvoyerDTO m = new MessageAEnvoyerDTO("000", "Notification SongSend", "Ceci est juste un test", "no date");
+							restResult += NotificationUtil.send(deviceList, m);
+						}
 					}
 				}
 				req.setAttribute("restResult", restResult);
@@ -87,7 +117,7 @@ public class UserAdminServlet extends AbstractServlet {
 		
 		
 		
-		List<PersonDTO> users = UserImpl.getInstance().findAllUsers();
+		List<PersonWrappedDTO> users = UserImpl.getInstance().findAllUsersWithDevices();
 		
 		req.setAttribute("userList", users);
 		

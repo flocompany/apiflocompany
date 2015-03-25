@@ -1,9 +1,11 @@
 package com.flocompany.util;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.flocompany.rest.model.MessageAEnvoyerDTO;
 import com.google.android.gcm.server.Message;
+import com.google.android.gcm.server.MulticastResult;
 import com.google.android.gcm.server.Result;
 import com.google.android.gcm.server.Sender;
 import static com.flocompany.util.RestUtil.GCM_KEY_SERVER;
@@ -11,23 +13,24 @@ import static com.flocompany.util.RestUtil.GCM_KEY_SERVER;
 public class NotificationUtil {
 
 	
-	public static void sendNotification(String regIdTerminal, MessageAEnvoyerDTO message) throws IOException {
+	public static int send(List<String> regIdDevices, MessageAEnvoyerDTO message) throws IOException {
 
-		MessageAEnvoyerDTO m = new MessageAEnvoyerDTO("1", "Test", "Body message", "date");
 		
 		Message androidMessage = new Message.Builder()
 		.timeToLive(5)
-		.addData("id", m.getId())
-		.addData("titre", m.getTitle())
-		.addData("dateCreation", m.getDateCreation())
-		.addData("texte", m.getBody())
+		.addData("id", message.getId())
+		.addData("titre", message.getTitle())
+		.addData("dateCreation", message.getDateCreation())
+		.addData("texte", message.getBody())
 		.build();
 		
 		
 		Sender sender = new Sender(GCM_KEY_SERVER); 
 
-		Result resultat = sender.send(androidMessage, regIdTerminal, 3);
-
+		MulticastResult resultat = sender.send(androidMessage, regIdDevices, 3);
+		
+		int result = resultat.getTotal();
+		return result;
 	}
 	
 }
