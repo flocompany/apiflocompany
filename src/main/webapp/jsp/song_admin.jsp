@@ -1,4 +1,4 @@
-﻿<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.SongDTO" %>
 <%@ page import="com.flocompany.util.EnumCategorySong" %>
 <%@ page import="com.google.appengine.api.blobstore.*" %>
@@ -11,9 +11,9 @@
         <meta charset="ISO-8859-1" />
    </head>
 <body>
-	<h1>Ecran d'administration des parametres :</h1>
+	<h1>Ecran d'administration des extraits sonores :</h1>
  
-	Ajout d'utilisateur : 
+	Ajout d'un extrait sonore : 
 	<form method="post" action="<%= blobstoreService.createUploadUrl("/admin/song") %>" enctype="multipart/form-data">
 		<table>
 			<tr>
@@ -67,7 +67,11 @@
 					Status :
 				</td>
 				<td>
-					<input type="text" name="status" id="status" />
+					<select name="status">
+						  <option value="free">FREE</option>
+						  <option value="premium">PREMIEUM</option>
+						  <option value="inactive">INACTIVE</option>
+					</select> 
 				</td>
 			</tr>	
 			<tr>
@@ -88,15 +92,14 @@
 			</tr>				
 		</table>
 		<select name="action">
-			  <option value="upload">Créer</option>
+			  <option value="upload">Cr�er</option>
 			  <option value="update">update</option>
-			  <option value="other">other</option>
 		</select> 
 		<input type="submit" class="save" title="Executer" value="Executer" />
 	</form>
 	<hr />
 	Message de retour : </br>
-	<%=request.getAttribute("result") %>
+	<span style="color: red;"><%=request.getAttribute("result") %></span>
 	<hr />
 	
 	<h2>Liste des extraits sonores</h2>
@@ -127,8 +130,8 @@
 			  <td><%=s.getExtract() %></td>
 			  <td><%=s.getDescription() %></td>
 			  <td><%=s.getStatus() %></td>
-			  <td><%=s.getMp3Key() %></td>
-			  <td><%=s.getOggKey() %></td>
+			  <td> <span style="color: green;" title="<%=s.getMp3Key() %>"> info </span></td>
+			  <td><span style="color: green;" title="<%=s.getOggKey() %>">  info  </span></td>
 			  <td><a href="/admin/song?action=delete&id=<%=s.getId()%>">Delete</a></td>
 			</tr>
 		<%

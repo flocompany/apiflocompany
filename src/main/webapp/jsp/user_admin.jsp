@@ -53,7 +53,6 @@
 			  <option value="demo">sampledemo (WS, GET)</option>
 			  <option value="search">search (WS, GET)</option>
 			  <option value="add">add (Not WS))</option>
-			  <option value="other">other</option>
 		</select> 
 		<!-- input type="hidden" name="action" value="add" / -->
 		<input type="submit" class="save" title="Execute" value="Execute" />

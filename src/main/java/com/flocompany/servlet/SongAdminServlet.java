@@ -28,10 +28,7 @@ public class SongAdminServlet extends AbstractServlet {
 		req.setCharacterEncoding("ISO-8859-1");
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("ISO-8859-1");
-
-		
-		System.out.println(" *************************req.getParameter();" + req.getParameter("title"));
-        	
+        String result="";
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 		String action = req.getParameter("action");
 		if(action!=null){
@@ -61,13 +58,10 @@ public class SongAdminServlet extends AbstractServlet {
 			        String status = req.getParameter("status");
 			        
 			        
-			        System.out.println(" *************************req.getParameter();" + req.getParameter("title"));
-			        System.out.println(" *************************new string;" + new String (title.getBytes ("iso-8859-1"), "UTF-8"));
-			        
 			        
 			    if(StringUtil.isNotEmpty(mp3Key)&&StringUtil.isNotEmpty(oggKey)&&StringUtil.isNotEmpty(title)&&StringUtil.isNotEmpty(extract)){
 			        SongImpl.getInstance().addSong(mp3Key, oggKey, category, title, extract, description);
-			        req.setAttribute("result", "L'upload des fichiers a été réalisé avec succés.");
+			        result=  "L'upload des fichiers s'est bien passes.";
 		        }else{
 		        	if(StringUtil.isNotEmpty(mp3Key)){
 						blobstoreService.delete(blobKeysMp3.get(0));
@@ -75,7 +69,7 @@ public class SongAdminServlet extends AbstractServlet {
 		        	if(StringUtil.isNotEmpty(oggKey)){
 						blobstoreService.delete(blobKeysOgg.get(0));
 		        	}
-		        	req.setAttribute("result", "Les champs titre, extrait et les deux fichiers sont obligatoires!!");
+		        	result=  "Les champs titre, extrait et les deux fichiers sont obligatoires!!";
 		        }
 				
 			}
@@ -92,13 +86,25 @@ public class SongAdminServlet extends AbstractServlet {
 				
 			}
 			if(action.equals("update")){
-				//TODO
-				
+		        String status = req.getParameter("status");
+		        String id = req.getParameter("id_song");
+		        if(StringUtil.isNotEmpty(id)){
+		        	long resultL = SongImpl.getInstance().updateFriend(id, status);
+		        	if(resultL==-1){
+		        		result=  "Le satus n'a pas pu etre mis a jour!! Verifier que l'id existe bien.";
+		        	}else{
+		        		result=  "Le satus a bien ete mis a jour.";
+		        	}
+		        }else{
+		        	result=  "Les champs id est obligatoire pour l'update!!";
+		        }
 			}
+			resp.sendRedirect(req.getContextPath() + "/admin/song?result=" + result);
 		}
 		
-		
 		try {
+			String r = req.getParameter("result");
+			req.setAttribute("result", r);
 			List<SongDTO> songs =  SongImpl.getInstance().findAllSongs();
 			req.setAttribute("songList", songs);
 			req.getRequestDispatcher("/jsp/song_admin.jsp").forward(req, resp);

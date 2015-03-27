@@ -147,6 +147,18 @@ public class UserImpl {
 	
 	
 	
+	/** update a Person Entity
+	 * @param person
+	 * @return
+	 */
+	public PersonDTO updateUser(PersonDTO person){
+		Person p = new Person();
+		p.initFromDTO(person);
+		Key<Person> key = ofy().save().entity(p).now(); 
+		Person newPerson = ofy().load().key(key).now();
+		return newPerson.toDto();
+	}
+	
 	
 	/** Get all Users
 	 * @return

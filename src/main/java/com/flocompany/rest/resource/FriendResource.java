@@ -1,8 +1,13 @@
 package com.flocompany.rest.resource;
 
 import static com.flocompany.util.RestUtil.ID;
+import static com.flocompany.util.RestUtil.PWD;
 import static com.flocompany.util.RestUtil.ID_APPLICANT;
 import static com.flocompany.util.RestUtil.ID_PERSON;
+import static com.flocompany.util.RestUtil.ID_FRIEND;
+import static com.flocompany.util.RestUtil.STATUS;
+import static com.flocompany.util.RestUtil.PUB_CONTENT_PARAMETER;
+import static com.flocompany.util.RestUtil.PUB_PARAMETER;
 import static com.flocompany.util.StringUtil.isBlank;
 import static com.flocompany.util.StringUtil.isEmpty;
 
@@ -21,13 +26,17 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 import com.flocompany.dao.impl.FriendImpl;
+import com.flocompany.dao.impl.ParameterImpl;
 import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.exception.BadRequestException;
+import com.flocompany.rest.exception.PublicityException;
 import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
 import com.flocompany.rest.model.FriendDTO;
 import com.flocompany.rest.model.FriendWrappedDTO;
+import com.flocompany.rest.model.ParameterDTO;
 import com.flocompany.rest.model.PersonDTO;
+import com.flocompany.util.RestUtil;
 
 
 /** Rest service for the Person resource
@@ -61,6 +70,12 @@ public class FriendResource extends AbstractResource{
     @Path("mylist")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public List<FriendWrappedDTO> myList(@QueryParam(ID) String id) {
+    	
+    	
+    	sendPublicity(id);
+    	
+    	
+    	//recupération de la liste
     	List<FriendWrappedDTO> results = FriendImpl.getInstance().findFriendWrappedDTOByIdperson(id);
     	if(results.size()<=0){
     		throw new ResourceNotFindException("Sorry, Not friends for the moment. You must add to use application");
@@ -68,7 +83,7 @@ public class FriendResource extends AbstractResource{
         return results;
     }
     
-    /** Rest Service witch allow to register a new User in the application
+    /** Rest Service witch allow to register a new Friend entity in the application
      * @param personParams
      * @return
      */
@@ -76,7 +91,7 @@ public class FriendResource extends AbstractResource{
     @Path("add")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public PersonDTO signUpPerson(MultivaluedMap<String, String> friendParams) {
+    public PersonDTO add(MultivaluedMap<String, String> friendParams) {
 		String idApplicant = friendParams.getFirst(ID_APPLICANT);
 		String idPerson = friendParams.getFirst(ID_PERSON);
 		PersonDTO newFriend = null;
@@ -85,7 +100,11 @@ public class FriendResource extends AbstractResource{
 			throw new BadRequestException(
 					"Missing parameters");
 		}
-
+		
+		if(idApplicant.equals(idPerson)){
+			throw new BadRequestException(
+					"You can't add yourself.");
+		}
 
 		PersonDTO personApplicant = UserImpl.getInstance().findById(idApplicant);
 		if (personApplicant == null) {
@@ -147,6 +166,59 @@ public class FriendResource extends AbstractResource{
 			FriendImpl.getInstance().addFriend(idApplicant, String.valueOf(result.getId()));
 		}
 		return result;
+    }
+    
+    
+    /** Rest Service witch allow to update the Friend status in the application
+     * @param personParams
+     * @return
+     */
+    @POST
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void update(MultivaluedMap<String, String> friendParams) {
+		String id = friendParams.getFirst(ID);
+		String pwd = friendParams.getFirst(PWD);
+		testPrivilege(id, pwd);
+		String idFriend = friendParams.getFirst(ID_FRIEND);
+		String status = friendParams.getFirst(STATUS);
+		if (isEmpty(idFriend) || isEmpty(status)
+				|| isBlank(idFriend) || isBlank(status) ) {
+			throw new BadRequestException(
+					"Missing parameters");
+		}
+
+		long result = FriendImpl.getInstance().updateFriend(idFriend, status);
+
+		if (result==-1){
+			throw new TechnicalException("Sorry, Internal error was occured.");
+		}
+    }
+    
+    /** Rest Service witch allow to delete a friend resource in the application
+     * @param personParams
+     * @return
+     */
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public void delete(MultivaluedMap<String, String> friendParams) {
+		String id = friendParams.getFirst(ID);
+		String pwd = friendParams.getFirst(PWD);
+		testPrivilege(id, pwd);
+		String idFriend = friendParams.getFirst(ID_FRIEND);
+		if (isEmpty(idFriend) || isBlank(idFriend) ) {
+			throw new BadRequestException(
+					"Missing parameters");
+		}
+
+		boolean result = FriendImpl.getInstance().delete(Long.valueOf(idFriend));
+
+		if (!result){
+			throw new TechnicalException("Sorry, Internal error was occured.");
+		}
     }
     
 }

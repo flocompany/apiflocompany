@@ -53,6 +53,21 @@ public class SongImpl {
 		return key.getId();
 	}
 	
+	/** Update the value of the status Song Entity
+	 * @param name
+	 * @param value
+	 * @return
+	 */
+	public long updateFriend(String id, String status){
+		Song s = ofy().cache(false).load().key(Key.create(Key.create(Song.class, "Songs"), Song.class, Long.valueOf(id))).now();
+		if(s!=null){
+			s.setStatus(status);
+			Key<Song> keyToSave = ofy().cache(false).save().entity(s).now(); 
+			return keyToSave.getId();
+		}
+		return -1;
+	}
+	
 	/** Get all Song
 	 * @return
 	 */

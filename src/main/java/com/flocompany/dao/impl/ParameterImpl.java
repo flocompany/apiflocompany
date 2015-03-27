@@ -3,6 +3,8 @@ package com.flocompany.dao.impl;
 import static com.flocompany.util.RestUtil.MAIL_PARAMETER;
 import static com.flocompany.util.RestUtil.URL_WEB_SERVICE_PARAMETER;
 import static com.flocompany.util.RestUtil.CATEGORY_PARAMETER;
+import static com.flocompany.util.RestUtil.PUB_PARAMETER;
+import static com.flocompany.util.RestUtil.PUB_CONTENT_PARAMETER;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 import com.flocompany.dao.model.Parameter;
 import com.flocompany.rest.model.ParameterDTO;
 import com.flocompany.util.EnumCategorySong;
+import com.flocompany.util.RestUtil;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -39,9 +42,19 @@ public class ParameterImpl {
 	 * Initialise data of parameter
 	 */
 	public void init(){
-		initParametre(URL_WEB_SERVICE_PARAMETER, "http://localhost/rest/");
+		if(RestUtil.MODE.equals("dev")){
+			initParametre(URL_WEB_SERVICE_PARAMETER, "http://localhost/rest/");
+		}else{
+			initParametre(URL_WEB_SERVICE_PARAMETER, "https://apiservice4444.appspot.com/rest/");
+		}
 		initParametre(MAIL_PARAMETER, "florent.courtiade@gmail.com");
 		initParametre(CATEGORY_PARAMETER, EnumCategorySong.NONE.getCode());
+		initParametre(PUB_PARAMETER, "0");
+		if(RestUtil.MODE.equals("dev")){
+			initParametre(PUB_CONTENT_PARAMETER, "<a href=\"http://www.zooplus.fr/+10pro_fr/partner/zap244755\"><img src=\"http://www.zooplus.fr/affiliate/material/zap244755\" alt=\"Hiver 2013\" border=\"0\"/></a>");
+		}else{
+			initParametre(PUB_CONTENT_PARAMETER,"");
+		}
 	}
 	
 	/** Control if the user not exit before save

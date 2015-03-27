@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.flocompany.dao.impl.MessageImpl;
 import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.model.MessageDTO;
+import com.flocompany.util.StringUtil;
 
 public class MessageAdminServlet extends AbstractServlet {
 
@@ -27,7 +28,6 @@ public class MessageAdminServlet extends AbstractServlet {
 				String idSender = req.getParameter("idSender");
 				String idSong = req.getParameter("idSong");
 				String message = req.getParameter("message");
-				
 				MessageImpl.getInstance().addMessage(idSender, idSong, idFriend);
 			}else if(action.equals("delete")){
 				String id = req.getParameter("id");
@@ -38,15 +38,9 @@ public class MessageAdminServlet extends AbstractServlet {
 			}
 		}
 		
-		
-		
-		List<MessageDTO> messages = MessageImpl.getInstance().findAllMessages();
-		
-		
-		
-		req.setAttribute("messageList", messages);
-		
 		try {
+			List<MessageDTO> messages = MessageImpl.getInstance().findAllMessages();
+			req.setAttribute("messageList", messages);
 			req.getRequestDispatcher("/jsp/message_admin.jsp").forward(req, resp);
 		} catch (ServletException e) {
 			e.printStackTrace();
@@ -54,7 +48,6 @@ public class MessageAdminServlet extends AbstractServlet {
 	}
 	
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		System.out.println("**********POST");
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding("UTF-8");
 		req.setCharacterEncoding("UTF-8");

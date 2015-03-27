@@ -79,46 +79,36 @@ public class MessageImpl {
 		return results;
 	}
 	
-	
-	/** Get all Messages
+	/** Count all message not read
 	 * @param friend
 	 * @return
 	 */
-	public List<MessageDTO> findAllMessagesByFriend(Key<Friend> friend){
-		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).list();
-		List<MessageDTO> results = new ArrayList<MessageDTO>();
-		for(Message m : messages){
-			results.add(m.toDto());
-		}
-		
-		return results;
-	}
-	
-	
-	
-	/** Get all Messages
-	 * @param friend
-	 * @return
-	 */
-	public int countMessagesByFriend(String idFriend){
+	public int countMessagesByFriend(String idFriend, String idUser){
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
-		System.out.println(friend.getString());
-		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).list();
+		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).filter("idSender !=", idUser).filter("read =", false).list();
 		int results = messages.size();
 		return results;
 	}
 	
 	
-	/** Get all Messages
+	/** Get all Messages by friend. The message is update to read if the user id is not the sender.
 	 * @param friend
 	 * @return
 	 */
-	public List<MessageWrappedDTO> findAllMessagesByFriend(String idFriend){
+	public List<MessageWrappedDTO> findAllMessagesByFriend(String idFriend, String idUser, boolean updateReadValue){
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
 		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).order("dateMessage").list();
 		List<MessageWrappedDTO> results = new ArrayList<MessageWrappedDTO>();
 		for(Message m : messages){
 			String dateMessage=StringUtil.formatDateMessage(m.getDateMessage());
+			if(updateReadValue){
+				if(!m.getIdSender().equals(idUser)){
+					if(!m.getRead()){
+						m.setRead(true);
+						ofy().cache(false).save().entity(m).now();
+					}
+				}
+			}
 			MessageWrappedDTO newMessageWrappedDTO = new MessageWrappedDTO(m.getId(), m.getIdSender(), m.getIdSong(), m.getMessage(), dateMessage, m.getRead(), Long.valueOf(idFriend));
 			SongDTO s = SongImpl.getInstance().findById(m.getIdSong());		
 			newMessageWrappedDTO.setMp3Key(s.getMp3Key());

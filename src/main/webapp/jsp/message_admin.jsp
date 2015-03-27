@@ -1,4 +1,4 @@
-﻿<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.MessageDTO" %>
 <html>
    <head>
@@ -7,7 +7,7 @@
 <body>
 	<h1>Ecran d'administration des Messages</h1>
  
-	Ajout d'utilisateur : <a href="addCustomerPage"></a>
+	Ajout d'un message : <a href="addCustomerPage"></a>
 	<form method="post" action="/admin/message" >
 		<table>
 			<tr>
@@ -76,7 +76,6 @@
 		</table>
 		<select name="action">
 			  <option value="add">add (Not WS))</option>
-			  <option value="other">other</option>
 		</select> 
 		<input type="submit" class="save" title="Execute" value="Execute" />
 	</form>
@@ -84,7 +83,7 @@
 	
 	
 	<hr />
-	Retour du webservice : </br>
+	Retour  : </br>
 	<%="" %>
 	<hr />
 	<h2>Liste des messages</h2>

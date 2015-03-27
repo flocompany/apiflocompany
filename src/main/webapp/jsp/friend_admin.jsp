@@ -1,4 +1,4 @@
-ï»¿<%@ page import="java.util.List" %>
+<%@ page import="java.util.List" %>
 <%@ page import="com.flocompany.rest.model.FriendDTO" %>
 <html>
    <head>
@@ -7,7 +7,7 @@
 <body>
 	<h1>Ecran d'administration des amis</h1>
  
-	Ajout d'une amitiÃ© : <a href="addCustomerPage"></a>
+	Ajout d'une amitié : <a href="addCustomerPage"></a>
 	<form method="post" action="/admin/friend" >
 		<table>
 			<tr>
@@ -42,8 +42,11 @@
 					status :
 				</td>
 				<td>
-					<input type="text" style="width: 185px;" 
-                                            maxlength="30" name="status" id="status" />
+					<select name="status">
+						  <option value="accepted">ACCEPTED</option>
+						  <option value="blocked">BLOCKED</option>
+						  <option value="refused">REFUSED</option>
+					</select> 
 				</td>
 			</tr>			
 		</table>
@@ -52,7 +55,6 @@
 			  <option value="add">add (Not WS))</option>
 			  <option value="addWs">add (WS))</option>
 			  <option value="update">update (Not WS))</option>
-			  <option value="other">other</option>
 		</select> 
 		<!-- input type="hidden" name="action" value="add" / -->
 		<input type="submit" class="save" title="Execute" value="Execute" />
@@ -71,7 +73,7 @@
 				<td>Id</td>
 				<td>Id du demandeur</td>
 				<td>Id de receveur</td>
-				<td>Status de l'amitiÃ©</td>
+				<td>Status de l'amitié</td>
 				<td>Action</td>
 			</tr>
 		</thead>

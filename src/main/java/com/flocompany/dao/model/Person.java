@@ -19,6 +19,7 @@ public class Person {
     private String pwd;
     private String firstName;
     private String lastName;
+    private int accessHomeCount=0;
 
 	@Parent Key<Person> parent  = Key.create(Person.class, "Persons");
 	
@@ -74,18 +75,29 @@ public class Person {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	public int getAccessHomeCount() {
+		return accessHomeCount;
+	}
+
+	public void setAccessHomeCount(int accessHomeCount) {
+		this.accessHomeCount = accessHomeCount;
+	}
      
 
      public PersonDTO toDto(){
     	 PersonDTO p = new PersonDTO(pseudo, email, pwd);
     	 p.setId(this.id);
+    	 p.setAccessHomeCount(this.accessHomeCount);
     	 return p;
      }
   
 
      public void initFromDTO(PersonDTO dto){
+    	 this.id=dto.getId();
     	 this.pseudo=dto.getPseudo();
     	 this.email=dto.getEmail();
     	 this.pwd=dto.getPwd();
+    	 this.accessHomeCount=dto.getAccessHomeCount();
      }
 }

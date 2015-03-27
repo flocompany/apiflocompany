@@ -35,6 +35,7 @@ public class RestUtil {
 	//Resource parameter of Friend
 	public final static String ID_FRIEND = "id_friend";
 	public final static String ID_APPLICANT = "id_applicant";
+	public final static String STATUS = "status";
 	public final static String ID_PERSON = "id_person";
 	
 	//Resource parameter of Parametre
@@ -43,6 +44,8 @@ public class RestUtil {
 	public final static String URL_WEB_SERVICE_PARAMETER = "url_web_service";
 	public final static String MAIL_PARAMETER = "mail_admin";
 	public final static String CATEGORY_PARAMETER = "category_admin";
+	public final static String PUB_PARAMETER = "pub_active";
+	public final static String PUB_CONTENT_PARAMETER = "pub_content";
 	
 	//Friend status
 	public final static String ACCEPTED = "accepted";

@@ -12,6 +12,7 @@ public class PersonDTO {
     private String pwd;
     private String firstName;
     private String lastName;
+    private int accessHomeCount;
          
     public PersonDTO() {}
     
@@ -73,5 +74,14 @@ public class PersonDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
+	public int getAccessHomeCount() {
+		return accessHomeCount;
+	}
+
+	public void setAccessHomeCount(int accessHomeCount) {
+		this.accessHomeCount = accessHomeCount;
+	}
+    
          
 }

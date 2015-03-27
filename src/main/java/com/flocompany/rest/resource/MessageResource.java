@@ -1,8 +1,6 @@
 package com.flocompany.rest.resource;
 
-import static com.flocompany.util.RestUtil.ID_FRIEND_MESSAGE;
-import static com.flocompany.util.RestUtil.ID_SONG_MESSAGE;
-import static com.flocompany.util.RestUtil.ID_SENDER;
+import static com.flocompany.util.RestUtil.*;
 import static com.flocompany.util.StringUtil.isBlank;
 import static com.flocompany.util.StringUtil.isEmpty;
 import static com.flocompany.util.StringUtil.isNotEmpty;
@@ -83,9 +81,13 @@ public class MessageResource extends AbstractResource{
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-    public List<MessageWrappedDTO> list(@QueryParam(ID_FRIEND_MESSAGE) String idFriend) {
-    	System.out.println("idFriend" + idFriend);
-    	List<MessageWrappedDTO> messages = MessageImpl.getInstance().findAllMessagesByFriend(idFriend);
+    public List<MessageWrappedDTO> list(@QueryParam(ID_FRIEND_MESSAGE) String idFriend,@QueryParam(ID) String id, @QueryParam(PWD) String pwd) {
+    	testPrivilege(id, pwd);
+    	countAccess(id);
+    	List<MessageWrappedDTO> messages = MessageImpl.getInstance().findAllMessagesByFriend(idFriend, id, true);
+    	if(messages.size()<=0){
+    		throw new ResourceNotFindException("No messages. Go to choose button to send a song extract.");
+    	}
         return messages;
     }
     
