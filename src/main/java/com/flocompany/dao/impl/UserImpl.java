@@ -184,7 +184,7 @@ public class UserImpl {
 			for(DeviceDTO d : findDeviceByPerson(String.valueOf(p.getId()))){
 				listRegId.add(d.getIdRegDevice());
 			}
-			PersonWrappedDTO dto = new PersonWrappedDTO(p.getId(), p.getFirstName(), p.getLastName(), p.getEmail(), p.getPseudo(), StringUtils.join(listRegId, ", "));
+			PersonWrappedDTO dto = new PersonWrappedDTO(p.getId(), p.getFirstName(), p.getLastName(), p.getEmail(), p.getPseudo(), StringUtils.join(listRegId, ", "), p.getAccessHomeCount());
 			results.add(dto);
 		}
 		

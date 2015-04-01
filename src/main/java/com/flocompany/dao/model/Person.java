@@ -94,7 +94,9 @@ public class Person {
   
 
      public void initFromDTO(PersonDTO dto){
-    	 this.id=dto.getId();
+    	 if(dto.getId()!=0){
+    		 this.id=dto.getId();
+    	 }
     	 this.pseudo=dto.getPseudo();
     	 this.email=dto.getEmail();
     	 this.pwd=dto.getPwd();

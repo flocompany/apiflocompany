@@ -69,6 +69,7 @@
 				<td>Id</td>
 				<td>Pseudo</td>
 				<td>Email</td>
+				<td>Nb accés serveur</td>
 				<td>devices</td>
 				<td>Action</td>
 			</tr>
@@ -83,6 +84,7 @@
 			<td><%=u.getId()%></td>
 			  <td><%=u.getPseudo() %></td>
 			  <td><%=u.getEmail() %></td>
+			  <td><%=u.getAccessHomeCount() %></td>
 			  <td><%=u.getDevices() %></td>
 			  <td><a href="/admin/user?action=notify&id=<%=u.getId()%>">notifier</a> 
                              | <a href="/admin/user?action=delete&id=<%=u.getId()%>">Delete</a></td>

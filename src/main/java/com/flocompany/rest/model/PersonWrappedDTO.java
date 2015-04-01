@@ -13,6 +13,7 @@ public class PersonWrappedDTO {
     private String firstName;
     private String lastName;
     private String devices;
+    private int accessHomeCount;
          
     public PersonWrappedDTO() {}
     
@@ -23,7 +24,7 @@ public class PersonWrappedDTO {
         this.pwd = pwd;
     }
  
-    public PersonWrappedDTO(long id, String firstName, String lastName, String email, String pseudo, String devices) {
+    public PersonWrappedDTO(long id, String firstName, String lastName, String email, String pseudo, String devices, int accessHomeCount) {
  
         this.id = id;
         this.firstName = firstName;
@@ -31,6 +32,7 @@ public class PersonWrappedDTO {
         this.email = email;
         this.pseudo = pseudo;
         this.devices = devices;
+        this.accessHomeCount=accessHomeCount;
     }
     
     
@@ -83,6 +85,13 @@ public class PersonWrappedDTO {
 	public void setDevices(String devices) {
 		this.devices = devices;
 	}
-    
+
+	public int getAccessHomeCount() {
+		return accessHomeCount;
+	}
+
+	public void setAccessHomeCount(int accessHomeCount) {
+		this.accessHomeCount = accessHomeCount;
+	}
          
 }
