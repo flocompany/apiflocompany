@@ -9,6 +9,7 @@ public class FriendDTO {
 	private Long id;
 	private Long idPersonApplicant;
 	private Long idPerson;
+	private Long idBlocker;
 	private String status;
 	
 	
@@ -16,12 +17,13 @@ public class FriendDTO {
 	public FriendDTO() {
 	}
 
-	public FriendDTO(Long id, Long idPersonApplicant, Long idPerson,
+	public FriendDTO(Long id, Long idPersonApplicant, Long idPerson, Long idBlocker,
 			String status) {
 		super();
 		this.id = id;
 		this.idPersonApplicant = idPersonApplicant;
 		this.idPerson = idPerson;
+		this.idBlocker= idBlocker;
 		this.status = status;
 	}
 
@@ -49,4 +51,13 @@ public class FriendDTO {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public Long getIdBlocker() {
+		return idBlocker;
+	}
+
+	public void setIdBlocker(Long idBlocker) {
+		this.idBlocker = idBlocker;
+	}
+	
 }

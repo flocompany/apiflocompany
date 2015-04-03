@@ -14,9 +14,10 @@ public class Friend {
 	@Id Long id;
 	@Index Long idPersonApplicant;
 	@Index Long idPerson;
+	private Long idBlocker;
 	private String status=RestUtil.ACCEPTED;
 	
-	@Parent Key<Friend> parent;
+	@Parent Key<Friend> parent  = Key.create(Friend.class, "Friends");
 	
 	public Friend() {
 		super();
@@ -27,7 +28,6 @@ public class Friend {
 		super();
 		this.idPersonApplicant = idPersonApplicant;
 		this.idPerson = idPerson;
-        this.parent = Key.create(Friend.class, "friends");
 	}
     public Friend(Long idPersonApplicant, Long idPerson, String status) {
 		super();
@@ -70,13 +70,27 @@ public class Friend {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	public Long getIdBlocker() {
+		return idBlocker;
+	}
+
+	public void setIdBlocker(Long idBlocker) {
+		this.idBlocker = idBlocker;
+	}
+
+
 	public FriendDTO toDto(){
-    	FriendDTO f = new FriendDTO(id, idPersonApplicant, idPerson, status);
+    	FriendDTO f = new FriendDTO(id, idPersonApplicant, idPerson, idBlocker, status);
    	 	return f;
     }
     public void initFromDTO(FriendDTO dto){
+	   	 if(dto.getId()!=0){
+			 this.id=dto.getId();
+		 }
     	this.idPerson=dto.getIdPerson();
 		this.idPersonApplicant=dto.getIdPersonApplicant();
+		this.idBlocker= dto.getIdBlocker();
 		this.status=dto.getStatus();
     }
 	

@@ -29,6 +29,7 @@ import com.flocompany.dao.impl.FriendImpl;
 import com.flocompany.dao.impl.ParameterImpl;
 import com.flocompany.dao.impl.UserImpl;
 import com.flocompany.rest.exception.BadRequestException;
+import com.flocompany.rest.exception.NotAcceptableException;
 import com.flocompany.rest.exception.PublicityException;
 import com.flocompany.rest.exception.ResourceNotFindException;
 import com.flocompany.rest.exception.TechnicalException;
@@ -78,7 +79,7 @@ public class FriendResource extends AbstractResource{
     	//recupération de la liste
     	List<FriendWrappedDTO> results = FriendImpl.getInstance().findFriendWrappedDTOByIdperson(id);
     	if(results.size()<=0){
-    		throw new ResourceNotFindException("Sorry, Not friends for the moment. You must add to use application");
+    		throw new ResourceNotFindException("Sorry, no friends for the moment. You must add to use application");
     	}
         return results;
     }
@@ -188,9 +189,31 @@ public class FriendResource extends AbstractResource{
 			throw new BadRequestException(
 					"Missing parameters");
 		}
-
-		long result = FriendImpl.getInstance().updateFriend(idFriend, status);
-
+		long result = 0;
+		FriendDTO friend = FriendImpl.getInstance().findById(idFriend);
+		if(friend!=null){
+			if(RestUtil.BLOCKED.equals(status)){
+				if(!friend.getStatus().equals(RestUtil.BLOCKED)){
+					friend.setStatus(status);
+					friend.setIdBlocker(Long.valueOf(id));
+					result = FriendImpl.getInstance().updateFriend(friend);
+				}
+			}else if(RestUtil.ACCEPTED.equals(status)){
+				if(friend.getStatus().equals(RestUtil.BLOCKED)){
+					if(friend.getIdBlocker()==null){
+						friend.setStatus(status);
+						friend.setIdBlocker(null);
+						result = FriendImpl.getInstance().updateFriend(friend);
+					}else if (friend.getIdBlocker().equals(Long.valueOf(id))){
+						friend.setStatus(status);
+						friend.setIdBlocker(null);
+						result = FriendImpl.getInstance().updateFriend(friend);
+					}else{
+						throw new NotAcceptableException("You cannot active this friend because he blocked you.");
+					}
+				}
+			}
+		}
 		if (result==-1){
 			throw new TechnicalException("Sorry, Internal error was occured.");
 		}

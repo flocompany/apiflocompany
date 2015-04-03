@@ -6,11 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flocompany.dao.model.Friend;
+import com.flocompany.dao.model.Person;
 import com.flocompany.rest.model.FriendDTO;
 import com.flocompany.rest.model.FriendWrappedDTO;
 import com.flocompany.rest.model.MessageDTO;
 import com.flocompany.rest.model.MessageWrappedDTO;
 import com.flocompany.rest.model.PersonDTO;
+import com.flocompany.util.RestUtil;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.ObjectifyService;
 
@@ -67,16 +69,19 @@ public class FriendImpl {
 
 	
 	/** Update the value of a Friend Entity
-	 * @param name
-	 * @param value
 	 * @return
 	 */
-	public long updateFriend(String id, String status){
-		Friend f = ofy().cache(false).load().key(Key.create(Key.create(Friend.class, "friends"), Friend.class, Long.valueOf(id))).now();
-		if(f!=null){
-			f.setStatus(status);
-			Key<Friend> keyToSave = ofy().cache(false).save().entity(f).now(); 
-			return keyToSave.getId();
+	public long updateFriend(FriendDTO friendDTO){
+		if(friendDTO!=null){
+			Friend f = new Friend();
+			f.initFromDTO(friendDTO);
+			System.out.println("sscqscqsccssssss" + friendDTO.getStatus());
+			System.out.println("ssssssssssssss" + f.getStatus());
+			System.out.println("ssssssssssssss" + f.getIdBlocker());
+			Key<Friend> key = ofy().save().entity(f).now(); 
+			Friend newFriend = ofy().load().key(key).now();
+			System.out.println("ssssqqqqqqqqqqqqqqqqqqqqqqs" + newFriend.getStatus());
+			return newFriend.getId();
 		}
 		return -1;
 	}
@@ -86,9 +91,9 @@ public class FriendImpl {
 	 * @return
 	 */
 	public Friend findFriend(String idApplicant, String idPerson){
-		Friend friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idApplicant)).filter("idPerson", Long.valueOf(idPerson)).first().now();
+		Friend friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPersonApplicant", Long.valueOf(idApplicant)).filter("idPerson", Long.valueOf(idPerson)).first().now();
 		if(friends==null){
-			friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).filter("idPerson", Long.valueOf(idApplicant)).first().now();
+			friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).filter("idPerson", Long.valueOf(idApplicant)).first().now();
 		}
 		return friends;
 	}
@@ -100,7 +105,7 @@ public class FriendImpl {
 	 * @return
 	 */
 	public List<FriendDTO> findAllFriends(){
-		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).list();
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).list();
 		List<FriendDTO> results = new ArrayList<FriendDTO>();
 		for(Friend f : friends){
 			results.add(f.toDto());
@@ -114,9 +119,9 @@ public class FriendImpl {
 	 */
 	public List<Long> findFriendIdsByPerson(String idPerson){
 		List<Long> results = new ArrayList<Long>();
-		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
 		if (friends.size() <= 0) {
-			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPerson", Long.valueOf(idPerson)).list();
 			if (friends.size() > 0) {
 				for (Friend f : friends) {
 					results.add(f.getIdPersonApplicant());
@@ -126,7 +131,7 @@ public class FriendImpl {
 			for (Friend f : friends) {
 				results.add(f.getIdPerson());
 			}
-			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPerson", Long.valueOf(idPerson)).list();
 			if (friends.size() > 0) {
 				for (Friend f : friends) {
 					results.add(f.getIdPersonApplicant());
@@ -141,9 +146,9 @@ public class FriendImpl {
 	 */
 	public List<FriendWrappedDTO> findFriendWrappedDTOByIdperson(String idPerson){
 		List<FriendWrappedDTO> results = new ArrayList<FriendWrappedDTO>();
-		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
+		List<Friend> friends = ofy().cache(false).load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPersonApplicant", Long.valueOf(idPerson)).list();
 		if (friends.size() <= 0) {
-			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPerson", Long.valueOf(idPerson)).list();
 			if (friends.size() > 0) {
 				for (Friend f : friends) {
 					results.add(buildFriendWrappedDTO(f, idPerson, true));
@@ -153,7 +158,7 @@ public class FriendImpl {
 			for (Friend f : friends) {
 				results.add(buildFriendWrappedDTO(f, idPerson, false));
 			}
-			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "friends")).filter("idPerson", Long.valueOf(idPerson)).list();
+			friends = ofy().load().type(Friend.class).ancestor(Key.create(Friend.class, "Friends")).filter("idPerson", Long.valueOf(idPerson)).list();
 			if (friends.size() > 0) {
 				for (Friend f : friends) {
 					results.add(buildFriendWrappedDTO(f, idPerson, true));
@@ -181,7 +186,7 @@ public class FriendImpl {
 	
 	public FriendDTO findById(String id){
 		FriendDTO result = null;
-		Friend p = ofy().cache(false).load().key(Key.create(Key.create(Friend.class, "friends"), Friend.class, Long.valueOf(id))).now();
+		Friend p = ofy().cache(false).load().key(Key.create(Key.create(Friend.class, "Friends"), Friend.class, Long.valueOf(id))).now();
 		if(p !=null){
 			result = p.toDto();
 		}
@@ -200,7 +205,7 @@ public class FriendImpl {
 				MessageImpl.getInstance().deleteMessage(msg.getId(), msg.getIdFriend());
 			}
 		}
-		Key<Friend> key = Key.create(Key.create(Key.create(Friend.class, "friends"), Friend.class, id).getString());
+		Key<Friend> key = Key.create(Key.create(Key.create(Friend.class, "Friends"), Friend.class, id).getString());
 		ofy().cache(false).delete().key(key).now();
 		return true;
 	}

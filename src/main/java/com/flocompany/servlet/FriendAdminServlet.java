@@ -31,8 +31,10 @@ public class FriendAdminServlet extends AbstractServlet {
 			if(action.equals("update")){
 				String id = req.getParameter("id");
 				String status = req.getParameter("status");
+				FriendDTO f = FriendImpl.getInstance().findById(id);
+				f.setStatus(status);
 		        if(StringUtil.isNotEmpty(id)){
-		        	long resultL = FriendImpl.getInstance().updateFriend(id, status);
+		        	long resultL = FriendImpl.getInstance().updateFriend(f);
 		        	if(resultL==-1){
 		        		restResult=  "Le satus n'a pas pu etre mis a jour!! Verifier que l'id existe bien.";
 		        	}else{

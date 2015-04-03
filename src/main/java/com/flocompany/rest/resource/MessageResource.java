@@ -113,6 +113,13 @@ public class MessageResource extends AbstractResource{
 						"Parameter is missing.");
 			}
 			
+			FriendDTO friendDTO = FriendImpl.getInstance().findById(idFriend);
+			if(friendDTO!=null){
+				if(friendDTO.getStatus().equals(RestUtil.BLOCKED)){
+					throw new ResourceNotFindException("This friend is blocked. You cannot send message to this user.");
+				}
+			}
+			
 			long result = MessageImpl.getInstance().addMessage(idSender, idSong, idFriend);
 
 			
