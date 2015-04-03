@@ -86,7 +86,10 @@ public class MessageImpl {
 	public int countMessagesByFriend(String idFriend, String idUser){
 		Key<Friend> friend = Key.create(Friend.class, Long.valueOf(idFriend));
 		List<Message> messages = ofy().cache(false).load().type(Message.class).ancestor(friend).filter("idSender !=", idUser).filter("read =", false).list();
-		int results = messages.size();
+		int results = 0;
+		if(messages!=null){
+				results = messages.size();
+		}
 		return results;
 	}
 	
